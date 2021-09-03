@@ -2,7 +2,7 @@ let msg_counter = 0
 
 function init() {
     console.log("Init")
-    //console.log(getCookies())
+    //console.log(getCookies()[0])
     if (getCookies()[0] == "") {
         msg_counter = 0
     }
@@ -23,32 +23,33 @@ function getMessage() {
     console.log("getMessage")
 
     let message = document.getElementById('text_box').value
+    document.getElementById('text_box').value = ""
     
 
     if (message.length <= 0 || message.length > 140) {
-        //gör felmeddelande
-        //window.alert("Faulty message")
-        
+        //document.getElementById('error_p_tag').value = "error, please write a message of max 140 characters"
+        console.log("faulty msg")
     } else {
         msg_counter++
-        //Lägg till text i cookie
-        //document.cookie = "message = " + message + ";"
+        console.log("msg_counter increased with 1 and has a value of " + msg_counter)
         setCookie("msg" + msg_counter + "=" + message)
+        createMsgTag("msg" + msg_counter + "=" + message)
     }
 
-
-    //Displaya nytt meddelande på hemsidan
+    console.log("Current cookies = " + document.cookies)
 
 }
 
 function displayMessages() {
     let cookiearray = getCookies()
-    for (message in cookiearray) {
-        createMsgTag(message)
+    console.log(cookiearray)
+    for (index in cookiearray) {
+        createMsgTag(cookiearray[index])
     }
 }
 
-function createMsgTag(msg) {
+function createMsgTag(message) {
+    console.log("Create msg tag message is = " + message)
     const para = document.createElement("p")
     const node = document.createTextNode(message)
     para.appendChild(node);
@@ -71,6 +72,7 @@ function setCookie(value) {
         date.setTime(date.getTime() + (days2460601000));
         expires = "; expires=" + date.toUTCString();
     }*/
+    console.log("Added cookie with values : " + value)
     document.cookie = value;
 }
 
