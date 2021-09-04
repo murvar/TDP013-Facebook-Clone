@@ -49,13 +49,26 @@ function displayMessages() {
 }
 
 function createMsgTag(message) {
+    let index = message.indexOf("=") 
+    const checkbox = document.createElement("input")
+    checkbox.type = "checkbox";
+    checkbox.name = message.substring(0,index-1)  //checkbox tar meddelandets namn
+    message = message.substr(index+1) //extrahera enbart meddelandet ur message
     console.log("Create msg tag message is = " + message)
     const para = document.createElement("p")
     const node = document.createTextNode(message)
+    let div = document.createElement("div")
+    div.classList.add("div2")
+    div.classList.add("col-md-10")
+    
     para.appendChild(node);
 
     const element = document.getElementById("div1");
-    element.appendChild(para);
+    para.classList.add("col-md-6")
+    checkbox.classList.add("col-md-12")
+    div.appendChild(para);
+    div.appendChild(checkbox)
+    element.appendChild(div)
 }
 
 

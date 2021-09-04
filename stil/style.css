@@ -6,14 +6,14 @@ form {
 
 }
 
-p {
+/*p {
     border-style: solid;
     display: block;
     width: 50%;
     height: auto;
     text-align: center;
 
-}
+}*/
 
 input[type=text] {
     width: 50%;
@@ -28,13 +28,20 @@ input[type=button] {
     box-sizing: border-box;
     text-align: center;
   }
-
-#div1 {
-    displayflex: flexdirection 
+input[type=checkbox] {
+    text-align: right;
+    
 }
 
-/*p {
-    margin: 10px 0;
-    padding: 5px;
-    border: 1px solid #999;
-}*/
+.div1 {
+    /*displayflex: flexdirection*/ 
+}
+
+.div2 {
+    border-style: solid;
+    display: block;
+    width: 50%;
+    height: auto;
+    text-align: center;
+}
+
