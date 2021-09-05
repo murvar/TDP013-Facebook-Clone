@@ -8,14 +8,13 @@ function init() {
     }
     else {
         msg_counter = document.cookie.split(';').length
+        displayMessages()
     }
     
     //document.cookie = "foo=ettttst"
     //console.log(document.cookie)
     console.log(document.getElementById('submit_btn'))
     document.getElementById("submit_btn").addEventListener("click", getMessage)
-    //document.getElementById("submit_bt").addEventListener("click", window.alert(document.cookie))
-    displayMessages()
 }
 
 
