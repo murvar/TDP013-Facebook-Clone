@@ -2,7 +2,6 @@ let msg_counter = 0
 
 function init() {
     console.log("Init")
-    //console.log(getCookies()[0])
     if (getCookies()[0] == "") {
         msg_counter = 0
     }
@@ -11,8 +10,7 @@ function init() {
         displayMessages()
     }
     
-    //document.cookie = "foo=ettttst"
-    //console.log(document.cookie)
+
     console.log(document.getElementById('submit_btn'))
     document.getElementById("submit_btn").addEventListener("click", getMessage)
 }
@@ -23,11 +21,11 @@ function getMessage() {
 
     let message = document.getElementById('text_box').value
     document.getElementById('text_box').value = ""
+    removeErrorMsg()
     
 
     if (message.length <= 0 || message.length > 140) {
-        //document.getElementById('error_p_tag').value = "error, please write a message of max 140 characters"
-        console.log("faulty msg")
+        displayErrorMsg()
     } else {
         msg_counter++
         console.log("msg_counter increased with 1 and has a value of " + msg_counter)
@@ -37,6 +35,21 @@ function getMessage() {
 
     console.log("Current cookies = " + document.cookies)
 
+}
+
+function displayErrorMsg() {
+    let para = document.createElement("p")
+    let node = document.createTextNode("Skriv ett meddelande som är minst 1 och max 140 karaktärer")
+    let element = document.getElementById("error_msg")
+    para.appendChild(node)
+    element.append(para)
+}
+
+function removeErrorMsg() {
+    let element = document.getElementById("error_msg")
+    if(element.firstChild) {
+        element.removeChild(element.firstChild)
+    }
 }
 
 function displayMessages() {
@@ -58,32 +71,32 @@ function createMsgTag(message) {
     const node = document.createTextNode(message)
     let div = document.createElement("div")
     div.classList.add("div2")
-    div.classList.add("col-md-10")
+    div.classList.add("col-md-8")
+    div.classList.add("row")
     
     para.appendChild(node);
 
     const element = document.getElementById("div1");
-    para.classList.add("col-md-6")
-    checkbox.classList.add("col-md-12")
+    para.classList.add("col-md-8")
+    let div2 = document.createElement("div")
+    div2.classList.add("col-md-2")
+    checkbox.classList.add("col-md-4")
+    checkbox.classList.add("pull-right")
     div.appendChild(para);
+    div.appendChild(div2)
     div.appendChild(checkbox)
-    element.appendChild(div)
+    element.prepend(div)
 }
 
 
 function getCookies() {
     let messages = document.cookie.split(';');
-    return messages.reverse()
+    return messages
 }
 
 
 
 function setCookie(value) {
-    /*if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days2460601000));
-        expires = "; expires=" + date.toUTCString();
-    }*/
     console.log("Added cookie with values : " + value)
     document.cookie = value;
 }
