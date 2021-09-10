@@ -22,18 +22,17 @@ function getMessage() {
     let message = document.getElementById('text_box').value
     document.getElementById('text_box').value = ""
     removeErrorMsg()
-    
 
     if (message.length <= 0 || message.length > 140) {
         displayErrorMsg()
     } else {
         msg_counter++
         console.log("msg_counter increased with 1 and has a value of " + msg_counter)
-        setCookie("msg" + msg_counter + "=" + message)
-        createMsgTag("msg" + msg_counter + "=" + message)
+        setCookie(message, msg_counter, 0)
+        createMsgTag(createCustomObject(message, msg_counter, 0))
     }
 
-    console.log("Current cookies = " + document.cookies)
+    //console.log("Current cookies = " + document.cookies)
 
 }
 
@@ -54,19 +53,26 @@ function removeErrorMsg() {
 
 function displayMessages() {
     let cookiearray = getCookies()
-    console.log(cookiearray)
+    console.log("cookiearray = " + cookiearray)
     for (index in cookiearray) {
         createMsgTag(cookiearray[index])
     }
 }
 
-function createMsgTag(message) {
-    let index = message.indexOf("=") 
+function createMsgTag(msg) {
+    //let index = message.indexOf("=") 
     const checkbox = document.createElement("input")
     checkbox.type = "checkbox";
-    checkbox.name = message.substring(0,index-1)  //checkbox tar meddelandets namn
-    message = message.substr(index+1) //extrahera enbart meddelandet ur message
-    console.log("Create msg tag message is = " + message)
+    if (msg.state == 1) {
+        checkbox.classList.add("checked")
+    }
+    checkbox.name = msg.index  //checkbox tar meddelandets namn
+    checkbox.addEventListener("change", function() {
+        console.log("changed checkbox state")
+        setCookie(msg.message, msg.index, 1)
+    })
+    message = msg.message //extrahera enbart meddelandet ur message
+    //console.log("Create msg tag message is = " + message)
     const para = document.createElement("p")
     const node = document.createTextNode(message)
     let div = document.createElement("div")
@@ -90,17 +96,41 @@ function createMsgTag(message) {
 
 
 function getCookies() {
-    let messages = document.cookie.split(';');
+    let data = document.cookie.split(';');
+    console.log(data)
+    let messages = []
+    if (data[0] != "") {
+        for (let i = 0; i < data.length; i++) {
+            let nameValueArray = data[i].split("=")
+            let customObject = JSON.parse(nameValueArray[1])
+            messages.push(customObject)
+        }
+    }
+    console.log(messages)
     return messages
 }
 
 
+function setCookie(value, index, state) {
+    //console.log("Added cookie with values : " + value)
+    let customObject = createCustomObject(value, index, state)
 
-function setCookie(value) {
-    console.log("Added cookie with values : " + value)
-    document.cookie = value;
+    let jsonString = JSON.stringify(customObject);
+    document.cookie = "cookieObject" + index + "=" + jsonString;
 }
 
+function editCookie(value, index, state) {
+    
+}
+
+
+function createCustomObject(value, index, state) {
+    let customObject = {};
+    customObject.message = value;
+    customObject.index = index
+    customObject.state = state
+    return customObject
+}
 
 
 window.onload = function() {
