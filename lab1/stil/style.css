@@ -1,0 +1,91 @@
+
+
+form {
+    text-align: center
+    
+
+}
+
+/*p {
+    border-style: solid;
+    display: block;
+    width: 50%;
+    height: auto;
+    text-align: center;
+
+}*/
+
+p {
+    background-color: lightgray;
+    word-break: break-all;
+    white-space: normal;
+
+}
+
+.content {
+    border: 5px solid black;
+}
+
+
+
+input[type=text] {
+    width: 100%;
+
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
+
+input[type=button] {
+    margin: 8px;
+    width: 75%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+input[type=checkbox] {
+    float: right;
+    width: 25px;
+    border: 
+    
+}
+
+
+
+.div1 {
+    /*displayflex: flexdirection*/ 
+}
+
+.div2 {
+    border-style: solid;
+    display: inline-block;
+    width: 100%;
+    height: auto;
+    text-align: center;
+    margin: 15px;
+}
+
+
+/*html, body {
+    height: 100%;
+}
+
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    border: 5px solid black;
+}*/
+
+.upper {
+    margin-bottom: 30px;
+}
+#error_msg {
+    text-align: center;
+    color: red;
+}
+
+
+
+
