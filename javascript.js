@@ -2,7 +2,7 @@ let msg_counter = 0
 
 function init() {
     console.log("Init")
-    if (getCookies()[0] == "") {
+    if (document.cookie == "") {
         msg_counter = 0
     }
     else {
@@ -53,6 +53,12 @@ function removeErrorMsg() {
 
 function displayMessages() {
     let cookiearray = getCookies()
+    cookiearray.sort(function compareFN(a, b){
+        if (a.index < b.index) {
+            return -1
+        }
+        else {return 1}
+    })
     console.log("cookiearray = " + cookiearray)
     for (index in cookiearray) {
         createMsgTag(cookiearray[index])
@@ -64,12 +70,17 @@ function createMsgTag(msg) {
     const checkbox = document.createElement("input")
     checkbox.type = "checkbox";
     if (msg.state == 1) {
-        checkbox.classList.add("checked")
+        checkbox.checked = true
     }
     checkbox.name = msg.index  //checkbox tar meddelandets namn
     checkbox.addEventListener("change", function() {
-        console.log("changed checkbox state")
-        setCookie(msg.message, msg.index, 1)
+        console.log("changed checkbox state = " + checkbox.checked)
+        if (checkbox.checked) {
+            setCookie(msg.message, msg.index, 1)
+        }
+        else {
+            setCookie(msg.message, msg.index, 0)
+        }
     })
     message = msg.message //extrahera enbart meddelandet ur message
     //console.log("Create msg tag message is = " + message)
@@ -112,15 +123,15 @@ function getCookies() {
 
 
 function setCookie(value, index, state) {
-    //console.log("Added cookie with values : " + value)
     let customObject = createCustomObject(value, index, state)
+    console.log("Added cookie with message: " + customObject.message + ", index: " + customObject.index + " and state: " + customObject.state)
 
     let jsonString = JSON.stringify(customObject);
     document.cookie = "cookieObject" + index + "=" + jsonString;
 }
 
 function editCookie(value, index, state) {
-    
+
 }
 
 
