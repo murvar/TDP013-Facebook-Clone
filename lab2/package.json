@@ -1,20 +1,31 @@
 {
   "name": "lab2",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec babel-node index.js"
+    "start": "nodemon --exec babel-node app.js",
+    "test": "mocha",
+    "coverage": "nyc --reporter=html npm test"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "^0.29.0",
+    "mongo-sanitize": "^1.1.0",
+    "mongodb": "^4.1.1",
+    "morgan": "~1.9.1",
+    "superagent": "^6.1.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.15.4",
     "@babel/core": "^7.15.5",
     "@babel/node": "^7.15.4",
     "@babel/preset-env": "^7.15.6",
-    "nodemon": "^2.0.12"
+    "mocha": "^9.1.1",
+    "nodemon": "^2.0.12",
+    "nyc": "^15.1.0",
+    "should": "^13.2.3"
   }
 }
