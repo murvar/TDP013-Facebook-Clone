@@ -1,157 +1,308 @@
 const assert = require('assert');
 const should = require('should');
 const { isTypedArray } = require('util/types');
-const { post } = require('superagent');
-//var express = require('express');
-//var app = express();
-const server = require("../app.js")
-//const expect = require('expect.js');
+const { get, patch, post, put } = require('superagent');
+const startServer = require("../app.js")
+const clearDatabase = require("../app.js");
+const { clear } = require('console');
+let server
+apiURL = "http://localhost:8888"
 
 // Frågor imorgon!!!
 //Tanke: verifiera att serveranslutning faktiskt finns inför testerna. 
 // Dubbelkolla också injections. 
+const long = "Loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"
 
 
 describe('Adding message', () => {
 
-    beforeEach(function() {
+    before(function(done) {
         // runs before each test in this block
-        let server = app.listen(8888, () => {
-        let host = server.address().address
-        let port = server.address().port
-        console.log(`Lyssnar på http://${host}:${port}`)
-        })
+        server = startServer()
+        done()
     });
     
-    afterEach(function() {
+    after(function() {
         // runs after each test in this block
         server.close()
+
     });
 
     it('Add message, return 200', (done) =>{
-        //Run server
-        post("/messages")
-            .type("form")
-            .send({ msg: 'Manny had a cat', state: false, id: false })
-            //.set('accept', 'json')
+        post(apiURL + "/messages")
+            .type("application/json")
+            .send({ msg: 'Manny had a cat', state: false, id: 0 })
             .then(res => {
-                console.log(res);
-                //should(res).have.property("status", 200)
+                should(res).have.property("status", 200)
                 done();
             })
             .catch(err => {
-                console.log(err);
-                done(err);
+                done();
+            })       
+    })
+ 
+    it('Add message with too many chars, return 500', (done) =>{
+        post(apiURL + "/messages")
+            .type("application/json")
+            .send({ msg: long, state: false, id: 0 })
+            .then(res => {
+                done();
             })
-            
-        
-        //done() 
+            .catch(err => {
+                should(err).have.property("status", 500)
+                done();
+            })  
     })
 
-    /*
-    it('Add message with too many chars, return 500', (done) =>{
-        done()
-    })
     it('Add message with too few chars, return 500', (done) =>{
-        done()
+        post(apiURL + "/messages")
+            .type("application/json")
+            .send({ msg: "", state: false, id: 0 })
+            .then(res => {
+                should(res).have.property("status", 500)
+                done();
+            })
+            .catch(err => {
+                done();
+            }) 
     })
-    it('Add message with injection, return 200', (done) =>{
-        done()
-    })
-    it('Add message with GET, return 405', (done) =>{
-        done()
-    })
+
     it('Add message with PUT, return 405', (done) =>{
-        done()
+        put(apiURL + "/messages")
+            .type("application/json")
+            .send({ msg: long, state: false, id: 0 })
+            .then(res => {
+                done();
+            })
+            .catch(err => {
+                should(err).have.property("status", 405)
+                done();
+            })
     })
+
     it('Add message with PATCH, return 405', (done) =>{
-        done()
-    })*/
+        patch(apiURL + "/messages")
+            .type("application/json")
+            .send({ msg: long, state: false, id: 0 })
+            .then(res => {
+                done();
+            })
+            .catch(err => {
+                should(err).have.property("status", 405)
+                done();
+            })
+    })
 })
 
-/*
+
 describe('Marking message', () => {
+    before(function(done) {
+        // runs before each test in this block
+            server = startServer()
+            post(apiURL + "/messages")
+            .type("application/json")
+            .send({ msg: 'Manny had a cat', state: false, id: 0 })
+            .then(res => {
+                done();
+            })
+            .catch(err => {
+                done();
+            })   
+    });
+    
+    after(function() {
+        // runs after each test in this block
+        server.close()
+
+    });
+
     it('Mark message with valid id, return 200', (done) =>{
-        done() 
+        patch(apiURL + "/messages/0")
+            .then(res => {
+                should(res).have.property("status", 200)
+                done();
+            })
+            .catch(err => {
+                done();
+            })
     })
+    
     it('Mark message with wrong id, return 400', (done) =>{
-        done() 
+        patch(apiURL + "/messages/s")
+            .then(res => {
+                should(res).have.property("status", 400)
+                done();
+            })
+            .catch(err => {
+                done();
+            }) 
     })
+
     it('Mark message with non-existing id, return 500', (done) =>{
-        done()
+        patch(apiURL + "/messages/10000")
+            .then(res => {
+                should(res).have.property("status", 500)
+                done();
+            })
+            .catch(err => {
+                done();
+            }) 
     })
-    it('Mark message with injection, return?', (done) =>{
-        done()
-    })
-    it('Mark message with GET, return 405', (done) =>{
-        done()
-    })
+
     it('Mark message with POST, return 405', (done) =>{
-        done()
+        post(apiURL + "/messages/10000")
+            .then(res => {
+                should(res).have.property("status", 500)
+                done();
+            })
+            .catch(err => {
+                done();
+            }) 
     })
 })
 
 describe('Get message', () => {
+    before(function(done) {
+        server = startServer()
+        post(apiURL + "/messages")
+            .type("application/json")
+            .send({ msg: 'Manny had a cat', state: false, id: 0 })
+            .then(res => {
+                done();
+            })
+            .catch(err => {
+                done();
+            })   
+    });
+    
+    after(function() {
+        server.close()
+  
+    });
+
     it('Get message with valid id, return 200 and msg?', (done) =>{
-        done() 
+        //add message before test?
+        get(apiURL + "/messages/0")
+            .then(res => {
+                should(res).have.property("status", { msg: 'Manny had a cat', state: false, id: 0 })
+                done();
+            })
+            .catch(err => {
+                done();
+            })  
     })
     it('Get message with wrong id, return 400', (done) =>{
-        done() 
+        get(apiURL + "/messages/s")
+        .then(res => {
+            should(res).have.property("status", 400)
+            done();
+        })
+        .catch(err => {
+            done();
+        }) 
     })
     it('Get message with non-existing id, return 500', (done) =>{
-        done()
+        get(apiURL + "/messages/9999")
+        .then(res => {
+            should(res).have.property("status", 500)
+            done();
+        })
+        .catch(err => {
+            done();
+        }) 
     })
-    it('Get message with injection, return?', (done) =>{
-        done()
-    })
+
     it('Get message with POST, return 405', (done) =>{
-        done()
+        post(apiURL + "/messages/0")
+        .then(res => {
+            should(res).have.property("status", 405)
+            done();
+        })
+        .catch(err => {
+            done();
+        }) 
     })
+
     it('Get message with PUT, return 405', (done) =>{
-        done()
+        put(apiURL + "/messages/0")
+        .then(res => {
+            should(res).have.property("status", 405)
+            done();
+        })
+        .catch(err => {
+            done();
+        }) 
     })
-    it('Get message with PATCH, return 405', (done) =>{
-        done()
-    })
+
 })
 
-describe('Get all messages', () => {
-    it('Get messages, return 200 and messages?', (done) =>{
-        done()
-    })
-    it('Get message with POST, return 405', (done) =>{
-        done()
-    })
-    it('Get message with PUT, return 405', (done) =>{
-        done()
-    })
-    it('Get message with PATCH, return 405', (done) =>{
-        done()
-    })
-})
+//  describe('Get all messages', () => { //Hur rensar vi vår databas under testning?
+//     before(function(done) {
+//         server = startServer()
+//         post(apiURL + "/messages")
+//             .type("application/json")
+//             .send({ msg: 'Manny had a cat', state: false, id: 0 })
+//             .then(res => {
+//                 done();
+//             })
+//             .catch(err => {
+//                 done();
+//             })   
+//     });
+    
+//      after(function() {
+//           //runs after each test in this block
+//         server.close()
 
-describe('Calls that do not map', () => {
-    it('Name?, return 404', (done) =>{
-        done()
-    })
-})
+//      });
 
-//Anrop som ej mappar till funktion, return 404
+//     it('Get messages, return 200 and messages?', (done) =>{
+//         get(apiURL + "/messages")
+//             .then(res => {
+//                 should(res).have.property("status", [{ msg: 'Manny had a cat', state: false, id: 0 }, { msg: 'Manny had a cat', state: false, id: 1 }])
+//                 //should(res).have.an.Array();
+//                 done();
+//             })
+//             .catch(err => {
+//                 done();
+//             }) 
+//      })
+    //  it('Get messages with PUT, return 405', (done) =>{
+    //      done()
+    //  })
+    //  it('Get messages with PATCH, return 405', (done) =>{
+    //      done()
+    //  })
+//  })
 
 
-let user = { name: 'John', pets: ['Jane', 'Pete', 'Mary'] }
+ describe('Calls that do not map', () => {
+    before(function(done) {
+                // runs before each test in this block
+                server = startServer()
+                done()
+            });
+            
+            after(function() {
+                // runs after each test in this block
+                server.close()
+        
+            });
+
+     it('Name?, return 404', (done) =>{
+        post(apiURL + "/janjkfan")
+            .type("application/json")
+            .send({ msg: 'Manny had a cat', state: false, id: 0 })
+            .then((res) => {
+                assert.strictEqual(res.status, 404)
+                done();
+            })
+            .catch((err) => {
+                assert.strictEqual(err.status, 404)
+                done();
+            }) 
+     })
+ })
 
 
-describe('test', () => {
-    it('this is my test', (done) => {
-        user.should.have.property('name', 'John')  
-        done()
-    })
-    it('this is my other test', (done) => {
-        user.should.have.property('pets').with.lengthOf(3)  
-        done()
-    })
-})
-
-*/
 

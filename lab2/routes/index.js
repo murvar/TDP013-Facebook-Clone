@@ -11,13 +11,19 @@ app.use(express.urlencoded({ extended: false }));
 
 router.all('/messages', function(req, res, next) {
   if(req.method == "POST" || req.method == "GET") {
+    //Kolla om get har en body?
+    if (req.method == "GET" && req.body) {
+        res.sendStatus(405)
+    }
     next();
   } else {
+    //console.log(req.method)
     res.sendStatus(405)
   }
 })
 
 router.all('/messages/:id', function(req, res, next) {
+  //console.log("1")
   if(req.method == "PATCH" || req.method == "GET") {
     next();
   } else {
@@ -34,16 +40,18 @@ router.post('/messages', (req, res) => {
     msg = sanitize(req.body)
     const regex = new RegExp(/<script>/)  //injection?
     if (!regex.test(msg)) {
-      console.log(req.body)
+      //console.log(req.body)
       MongoClient.connect(url, (err, db) => {
         let dbo = db.db("tdp013");
-        dbo.collection('messages').insertOne(msg, function(err, res) {
-          if (err) {console.log(err)}
-          else {console.log('item inserted')}
-          db.close();
+        dbo.collection('messages').insertOne(msg, function(err, result) {
+          if (err) {}
+          else {
+            db.close();
+            res.sendStatus(200)
+          }
+
         });
       });
-      res.sendStatus(200)
     }
     else {
       res.sendStatus(500)
@@ -54,43 +62,57 @@ router.post('/messages', (req, res) => {
   
 })
 
-function validateMsg(msg) {
-  if (msg.length == 0 || msg.length > 140) {
-    return false
-  } 
+function validateMsg(body) {
+
+  if (body.msg.length === 0 || body.msg.length > 140) { return false }
+  if (!(typeof(body.id) == "number"))                        { return false }
+  if (typeof(body.state) !== "boolean")                 { return false }
   return true
 }
 
 //------------------------------------------------------------------
 //Mark read
 router.patch(('/messages/:id'), (req, res) => {
-  let msgId = sanitize(req.params.id)
-  console.log("in patch function with value " + msgId)
 
+  let msgId = sanitize(req.params.id)
+  //console.log("in patch function with value " + msgId)
   const regex = new RegExp(/\D+/)
 
   if (regex.test(msgId)) {
     res.sendStatus(400)
+
   } else {
     MongoClient.connect(url, (err, db) => {
       let dbo = db.db("tdp013");
       let myquery = { id: msgId };
-
+      
       dbo.collection("messages").findOne(myquery, function(err, result) {
-        if (err) {console.log(err)}
-        else {
-          //console.log("Result = " + result.id + " " + result.state + " " + result.msg)
+        if (err) {
+          res.sendStatus(500)
+        } 
+        else if (result != null) {
+          //If we find a result
           let newvalues = { $set: {state: !(result.state)} };
           
-          dbo.collection("messages").updateOne(myquery, newvalues, function(err, res) {
-            if (err) {console.log(err)}
-            else {console.log("1 document updated");}
-            db.close();
+          dbo.collection("messages").updateOne(myquery, newvalues, function(err, result2) {
+            if (err) {
+              db.close();
+              res.sendStatus(500)
+            }
+            else {
+              db.close();
+              res.sendStatus(200)
+            }
           });
+        } 
+        else {
+          //If we dont find a result
+          res.sendStatus(500)
+          db.close();
         }
       });
+      
     });
-    res.sendStatus(200)
   }
 })
 
@@ -102,9 +124,17 @@ router.get(('/messages'), (req, res) => {
     let dbo = db.db("tdp013");
 
     dbo.collection('messages').find({}).toArray(function(err, result) {
-      if (err) {console.log(err)}
       db.close();
-      res.sendStatus(200)
+      if (err) {
+        //console.log(err)
+      }
+      else if (result != null) {
+        //console.log(result)
+        res.send(result)
+      }
+      else {
+        res.sendStatus(500)
+      }
     })
     
   })
@@ -125,25 +155,26 @@ router.get(('/messages/:id'), (req, res) => {
       let myquery = { id: msgId };
 
       dbo.collection("messages").findOne(myquery, function(err, result) {
-        if (err) {console.log(err)}
         db.close();
-        res.sendStatus(200)
+        if (err) {
+          //console.log(err)
+        }
+        else if (result != null) {
+          res.send(result)//.json(result)
+        }
+        else {
+          res.sendStatus(500)
+        }
       });
     });
   }
 })
 
-
-router.all('*', function(req, res, next) {
-  //If no function exists
-  res.sendStatus(404)
+app.use(function (req, res) {
+  //console.log("found it")
+  res.send("Sorry can't find that!", 404)
 })
 
-// error handler middleware
-app.use((error, req, res, next) => {
-  console.error(error.stack);
-  res.status(500).send('Something Broke!');
- })
 
 module.exports = router;
 

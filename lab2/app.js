@@ -23,21 +23,21 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+// catch 404 and forward to error handler //använd inte!
+// app.use(function(req, res, next) {
+//   next(createError(404));
+// });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// app.use(function(err, req, res, next) {
+//   // set locals, only providing error in development
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+//   // render the error page
+//   res.status(err.status || 500);
+//   res.render('error');
+// });
 
 
 const {MongoClient} = require('mongodb');
@@ -50,11 +50,19 @@ function startServer(port) {
     let port = server.address().port
     console.log(`Lyssnar på http://${host}:${port}`)
    })
-}/*
+  return(server)
+}
+
+function clearDatabase() {
+  MongoClient.dropDatabase();
+}
+/*
 let server = app.listen(8888, () => {
   let host = server.address().address
   let port = server.address().port
   console.log(`Lyssnar på http://${host}:${port}`)
  })*/
 
- module.exports = app;
+ //startServer()
+
+ module.exports = startServer;
