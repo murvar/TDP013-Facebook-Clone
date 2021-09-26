@@ -1,42 +1,83 @@
-let msg_counter = 0
 
-function init() {
-    console.log("Init")
-    if (document.cookie == "") {
-        msg_counter = 0
-    }
-    else {
-        msg_counter = document.cookie.split(';').length
-        displayMessages()
-    }
-    
+//-----------------------------------------------------------------------
+//-----funktioner för lab 3----------------------------------------------
+//-----------------------------------------------------------------------
 
-    console.log(document.getElementById('submit_btn'))
-    document.getElementById("submit_btn").addEventListener("click", getMessage)
+function newinit(){ //Hämta alla meddelanden
+
+    getMessages()
+    document.getElementById("submit_btn").addEventListener("click", postMessage)
 }
 
+async function publishMessage() {
+    //Kom ihåg att lägga till funktionalitet som ser till att hämta
+    //getMessage efter postMessage
+    postMessage()
+    // await postMessage()
+}
 
-function getMessage() {
-    console.log("getMessage")
+//Hette innan newGetMessage (just a reminder for future development)
+async function postMessage() { //Lägg till meddelande i databas
 
     let message = document.getElementById('text_box').value
     document.getElementById('text_box').value = ""
-    removeErrorMsg()
+    let msgbody = newcreateCustomObject(message, Date(), false)
+    //newremoveErrorMsg()
+    fetch('http://localhost:8888/messages', {
+        method: 'POST', 
+        headers : {
+            'Content-Type': 'application/json'
+        },
+        body : msgbody
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            else {
+                console.log("getting message")
+                getMessage(JSON.parse(msgbody).id);
+            }
+        })
+        .catch(err => {
+            console.error('There has been a problem with your fetch operation:', err);
+        });
+    
 
-    if (message.length <= 0 || message.length > 140) {
-        displayErrorMsg()
-    } else {
-        msg_counter++
-        console.log("msg_counter increased with 1 and has a value of " + msg_counter)
-        setCookie(message, msg_counter, 0)
-        createMsgTag(createCustomObject(message, msg_counter, 0))
-    }
-
-    //console.log("Current cookies = " + document.cookies)
-
+    //KÖR AJAX ANROP HÄR MED POST!!!!
+        //KÖR AJAX ANROP HÄR MED POST!!!!
+        // CreateMsgTag som del av ajax anrop
+        // Ha även med display error msg här om något går fel
 }
 
-function displayErrorMsg() {
+
+function getMessage(id) { //hämta ett meddelande
+    //HÄMTA MEDDELANDE MED GET!!!!
+    //HÄMTA MEDDELANDE MED GET!!!!
+    fetch('http://localhost:8888/messages/' + id, {
+        method: 'GET', 
+        headers : {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            else {
+                response.text().then(function(result) {
+                    //console.log(result)
+                    newcreateMsgTag(result)
+                })
+            }
+        })
+        .catch(err => {
+            console.error('There has been a problem with your fetch operation:', err);
+        });
+}
+
+
+function newdisplayErrorMsg() {
     let para = document.createElement("p")
     let node = document.createTextNode("Skriv ett meddelande som är minst 1 och max 140 karaktärer")
     let element = document.getElementById("error_msg")
@@ -44,48 +85,76 @@ function displayErrorMsg() {
     element.append(para)
 }
 
-function removeErrorMsg() {
+function newremoveErrorMsg() {
     let element = document.getElementById("error_msg")
     if(element.firstChild) {
         element.removeChild(element.firstChild)
     }
 }
 
-function displayMessages() {
-    let cookiearray = getCookies()
-    cookiearray.sort(function compareFN(a, b){
-        if (a.index < b.index) {
-            return -1
+async function getMessages() {
+    //Anropa funktion som returnerar array av messages i backend,
+    //Sorta baserat på tid
+    //Kör loop och lägg upp
+    //let cookiearray = await newgetAllMessages()
+    fetch('http://localhost:8888/messages/', {
+        method: 'GET', 
+        headers : {
+            'Content-Type': 'application/json'
         }
-        else {return 1}
     })
-    console.log("cookiearray = " + cookiearray)
-    for (index in cookiearray) {
-        createMsgTag(cookiearray[index])
-    }
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            else {
+                response.text().then(function(result) {
+                    data = JSON.parse(result)
+                    console.log(data)
+                    data.sort(function newcompareFN(a, b){
+                        if (new Date(a.id).getTime() < new Date(b.id).getTime()) {
+                            console.log("a.id is " + a.id);
+                            console.log("b.id is " + b.id);
+                            console.log("---------");
+
+                            
+                            return -1
+                        }
+                        else {return 1}
+                    })
+                    for (index in data) {
+                        newcreateMsgTag(data[index])
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            console.error('There has been a problem with your fetch operation:', err);
+        });
 }
 
-function createMsgTag(msg) {
-    //let index = message.indexOf("=") 
+function newcreateMsgTag(msg) {
+
+    // SE TILL ATT HA RÄTT NAMN PÅ ALLT NAMN RELATERAT
+    // ÄNDRA INFORmATION I newsetCookie
+    if (typeof msg == "string") {
+        msg = JSON.parse(msg)
+    }
+
     const checkbox = document.createElement("input")
     checkbox.type = "checkbox";
-    if (msg.state == 1) {
+    if (msg.state == true) {
         checkbox.checked = true
     }
-    checkbox.name = msg.index  //checkbox tar meddelandets namn
+
+    checkbox.name = msg.id  //checkbox tar meddelandets namn
     checkbox.addEventListener("change", function() {
         console.log("changed checkbox state = " + checkbox.checked)
-        if (checkbox.checked) {
-            setCookie(msg.message, msg.index, 1)
-        }
-        else {
-            setCookie(msg.message, msg.index, 0)
-        }
+        patchMessage(msg)
     })
-    message = msg.message //extrahera enbart meddelandet ur message
-    //console.log("Create msg tag message is = " + message)
+
     const para = document.createElement("p")
-    const node = document.createTextNode(message)
+    const node = document.createTextNode(msg.msg)
     let div = document.createElement("div")
     div.classList.add("div2")
     div.classList.add("col-md-8")
@@ -106,44 +175,66 @@ function createMsgTag(msg) {
 }
 
 
-function getCookies() {
-    let data = document.cookie.split(';');
-    console.log(data)
-    let messages = []
-    if (data[0] != "") {
-        for (let i = 0; i < data.length; i++) {
-            let nameValueArray = data[i].split("=")
-            let customObject = JSON.parse(nameValueArray[1])
-            messages.push(customObject)
+function newgetAllMessages() {
+
+    //AJAX HÄMNTNING FÖR ALLA MEDDELANDEN
+    fetch('http://localhost:8888/messages/', {
+        method: 'GET', 
+        headers : {
+            'Content-Type': 'application/json'
         }
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            else {
+                response.text().then(function(result) {
+                    console.log(JSON.parse(result))
+                    return(JSON.parse(result))
+                })
+            }
+        })
+        .catch(err => {
+            console.error('There has been a problem with your fetch operation:', err);
+        });
+}
+
+
+function patchMessage(msg) {
+    // KÖR PATCH FÖR ATT ÄNDRA STATE PÅ MEDDELANDE MED ID
+    //console.log("Added cookie with message: " + customObject.message + ", index: " + customObject.index + " and state: " + customObject.state)
+    if (typeof msg == "string") {
+        msg = JSON.parse(msg)
     }
-    console.log(messages)
-    return messages
+    console.log(msg)
+    console.log("msg id = " + msg.id)
+    fetch('http://localhost:8888/messages/' + msg.id, {
+        method: 'PATCH'
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+        })
+        .catch(err => {
+            console.error('There has been a problem with your fetch operation:', err);
+        });
 }
 
 
-function setCookie(value, index, state) {
-    let customObject = createCustomObject(value, index, state)
-    console.log("Added cookie with message: " + customObject.message + ", index: " + customObject.index + " and state: " + customObject.state)
-
-    let jsonString = JSON.stringify(customObject);
-    document.cookie = "cookieObject" + index + "=" + jsonString;
-}
-
-function editCookie(value, index, state) {
-
-}
-
-
-function createCustomObject(value, index, state) {
+function newcreateCustomObject(msg, id, state) {
+    let ourJSON = JSON.stringify({"msg" : msg, "id" : id, "state" : state})
     let customObject = {};
-    customObject.message = value;
-    customObject.index = index
+    customObject.msg = msg;
+    customObject.id = id
     customObject.state = state
-    return customObject
+    console.log("CUSTOM OBJEcT IS AS FOLLOWS:")
+    console.log(ourJSON)
+    return JSON.stringify(customObject)
 }
 
 
 window.onload = function() {
-    init();
+    newinit();
 }

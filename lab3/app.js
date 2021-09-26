@@ -8,6 +8,9 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+const corsMiddleware = require('./cors');
+app.options('*', corsMiddleware);
+app.use(corsMiddleware);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -63,6 +66,6 @@ let server = app.listen(8888, () => {
   console.log(`Lyssnar på http://${host}:${port}`)
  })*/
 
- //startServer()
+ startServer()
 
  module.exports = startServer;

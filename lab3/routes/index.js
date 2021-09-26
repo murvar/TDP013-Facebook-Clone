@@ -10,14 +10,17 @@ app.use(express.urlencoded({ extended: false }));
 
 
 router.all('/messages', function(req, res, next) {
+  console.log(req.body)
   if(req.method == "POST" || req.method == "GET") {
     //Kolla om get har en body?
-    if (req.method == "GET" && req.body) {
-        res.sendStatus(405)
+    if (req.method == "GET" && req.body == {}) { //Hur funkar det här???
+      console.log("failed get all")
+      res.sendStatus(405)
     }
     next();
   } else {
     //console.log(req.method)
+    console.log("another failed get all")
     res.sendStatus(405)
   }
 })
@@ -36,15 +39,15 @@ router.all('/messages/:id', function(req, res, next) {
 //Save one
 
 router.post('/messages', (req, res) => {
+  console.log(req.body)
   if (validateMsg(req.body)) {
     msg = sanitize(req.body)
     const regex = new RegExp(/<script>/)  //injection?
     if (!regex.test(msg)) {
-      //console.log(req.body)
       MongoClient.connect(url, (err, db) => {
         let dbo = db.db("tdp013");
         dbo.collection('messages').insertOne(msg, function(err, result) {
-          if (err) {}
+          if (err) {throw err}
           else {
             db.close();
             res.sendStatus(200)
@@ -59,13 +62,11 @@ router.post('/messages', (req, res) => {
   } else {
     res.sendStatus(500)
   }
-  
 })
 
 function validateMsg(body) {
-
   if (body.msg.length === 0 || body.msg.length > 140) { return false }
-  if (!(typeof(body.id) == "number"))                        { return false }
+  if (!(typeof(body.id) === "string"))                        { return false }
   if (typeof(body.state) !== "boolean")                 { return false }
   return true
 }
@@ -73,47 +74,41 @@ function validateMsg(body) {
 //------------------------------------------------------------------
 //Mark read
 router.patch(('/messages/:id'), (req, res) => {
-
+  console.log("HERE")
   let msgId = sanitize(req.params.id)
   //console.log("in patch function with value " + msgId)
-  const regex = new RegExp(/\D+/)
 
-  if (regex.test(msgId)) {
-    res.sendStatus(400)
-
-  } else {
-    MongoClient.connect(url, (err, db) => {
-      let dbo = db.db("tdp013");
-      let myquery = { id: msgId };
-      
-      dbo.collection("messages").findOne(myquery, function(err, result) {
-        if (err) {
-          res.sendStatus(500)
-        } 
-        else if (result != null) {
-          //If we find a result
-          let newvalues = { $set: {state: !(result.state)} };
-          
-          dbo.collection("messages").updateOne(myquery, newvalues, function(err, result2) {
-            if (err) {
-              db.close();
-              res.sendStatus(500)
-            }
-            else {
-              db.close();
-              res.sendStatus(200)
-            }
-          });
-        } 
-        else {
-          //If we dont find a result
-          res.sendStatus(500)
-          db.close();
-        }
-      });
-      
+  MongoClient.connect(url, (err, db) => {
+    let dbo = db.db("tdp013");
+    let myquery = { id: msgId };
+    
+    dbo.collection("messages").findOne(myquery, function(err, result) {
+      if (err) {
+        res.sendStatus(500)
+      } 
+      else if (result != null) {
+        //If we find a result
+        let newvalues = { $set: {state: !(result.state)} };
+        
+        dbo.collection("messages").updateOne(myquery, newvalues, function(err, result2) {
+          if (err) {
+            db.close();
+            res.sendStatus(500)
+          }
+          else {
+            db.close()
+            res.sendStatus(200)
+          }
+        });
+      } 
+      else {
+        //If we dont find a result
+        res.sendStatus(500)
+        db.close();
+      }
     });
-  }
+    
+  });
 })
 
 //------------------------------------------------------------------
@@ -123,13 +118,13 @@ router.get(('/messages'), (req, res) => {
   MongoClient.connect(url, (err, db) => {
     let dbo = db.db("tdp013");
 
-    dbo.collection('messages').find({}).toArray(function(err, result) {
+    dbo.collection('messages').find().toArray(function(err, result) {
       db.close();
       if (err) {
         //console.log(err)
       }
       else if (result != null) {
-        //console.log(result)
+        console.log(result)
         res.send(result)
       }
       else {
@@ -138,36 +133,32 @@ router.get(('/messages'), (req, res) => {
     })
     
   })
-  //res.send()
 })
 
 //------------------------------------------------------------------
 // Get one
 router.get(('/messages/:id'), (req, res) => {
   let msgId = sanitize(req.params.id)
-  const regex = new RegExp(/\D+/)
-  if (regex.test(msgId)) {
-    res.sendStatus(400)
-  } else {
+  console.log("ID: " + msgId)
 
-    MongoClient.connect(url, (err, db) => {
-      let dbo = db.db("tdp013");
-      let myquery = { id: msgId };
+  MongoClient.connect(url, (err, db) => {
+    let dbo = db.db("tdp013");
+    let myquery = { id: msgId };
 
-      dbo.collection("messages").findOne(myquery, function(err, result) {
-        db.close();
-        if (err) {
-          //console.log(err)
-        }
-        else if (result != null) {
-          res.send(result)//.json(result)
-        }
-        else {
-          res.sendStatus(500)
-        }
-      });
+    dbo.collection("messages").findOne(myquery, function(err, result) {
+      db.close();
+      if (err) {
+        //console.log(err)
+      }
+      else if (result != null) {
+        res.json(result)//.json(result)
+      }
+      else {
+        res.sendStatus(500)
+      }
     });
-  }
+  });
+
 })
 
 app.use(function (req, res) {

@@ -5,6 +5,7 @@ const { get, patch, post, put } = require('superagent');
 const startServer = require("../app.js")
 const clearDatabase = require("../app.js");
 const { clear } = require('console');
+const { option } = require('commander');
 let server
 apiURL = "http://localhost:8888"
 
@@ -70,7 +71,7 @@ describe('Adding message', () => {
     it('Add message with PUT, return 405', (done) =>{
         put(apiURL + "/messages")
             .type("application/json")
-            .send({ msg: long, state: false, id: 0 })
+            .send({ msg: "long", state: false, id: 0 })
             .then(res => {
                 done();
             })
@@ -83,7 +84,7 @@ describe('Adding message', () => {
     it('Add message with PATCH, return 405', (done) =>{
         patch(apiURL + "/messages")
             .type("application/json")
-            .send({ msg: long, state: false, id: 0 })
+            .send({ msg: "long", state: false, id: 0 })
             .then(res => {
                 done();
             })
@@ -92,6 +93,21 @@ describe('Adding message', () => {
                 done();
             })
     })
+
+    it('Add message with faulty state, return 500', (done) =>{
+        post(apiURL + "/messages")
+            .type("application/json")
+            .send({ msg: "hej", state: "fel", id: "date" })
+            .then(res => {
+                should(res).have.property("status", 500)
+                done();
+            })
+            .catch(err => {
+                should(err).have.property("status", 500)
+                done();
+            })
+    })
+    
 })
 
 
@@ -184,7 +200,7 @@ describe('Get message', () => {
         //add message before test?
         get(apiURL + "/messages/0")
             .then(res => {
-                should(res).have.property("status", { msg: 'Manny had a cat', state: false, id: 0 })
+                should(res).have.property("status", { msg: 'Manny had a cat', state: false, id: 0 }) //application/json?
                 done();
             })
             .catch(err => {
@@ -289,7 +305,7 @@ describe('Get message', () => {
         
             });
 
-     it('Name?, return 404', (done) =>{
+     it('Name?, return 404', (done) => {
         post(apiURL + "/janjkfan")
             .type("application/json")
             .send({ msg: 'Manny had a cat', state: false, id: 0 })
@@ -304,5 +320,18 @@ describe('Get message', () => {
      })
  })
 
+/*
+För att testa CORS skickade vi ett options call
+i postman som bl.a. returnerar headers.
+I dessa headers kollar vi specifikt efter 
+"access-control-allow-methods" och "access-control-allow-origin".
+Dessa två headers veriferar var vilka/vilken sida som får hämta  från
+servern samt vilka metoder som är tillåtna. 
+
+I vårt fall använder origin
+sig av en asteriks eftersom vår hemsida går via file:// istället
+för http://. 
+https://stackoverflow.com/questions/10752055/cross-origin-requests-are-only-supported-for-http-error-when-loading-a-local
+*/
 
 
