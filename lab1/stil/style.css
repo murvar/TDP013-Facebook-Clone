@@ -16,9 +16,13 @@ form {
 }*/
 
 p {
-    background-color: lightgray;
+    background-color: lightblue;
     word-break: break-all;
     white-space: normal;
+    height: 100%;
+    vertical-align: center;
+    margin: 0;
+    padding: 0;                                                                                                                                                                                   
 
 }
 
@@ -43,9 +47,7 @@ input[type=button] {
   }
 input[type=checkbox] {
     float: right;
-    width: 25px;
-    border: 
-    
+    width: 25px;  
 }
 
 
@@ -56,11 +58,20 @@ input[type=checkbox] {
 
 .div2 {
     border-style: solid;
-    display: inline-block;
+    /*display: inline-block;*/
     width: 100%;
     height: auto;
     text-align: center;
-    margin: 15px;
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 15px;
+    border-style: solid;
+    border-width: 2px;
+}
+
+.div {
+    margin: 0;
+    padding: 0;
 }
 
 
@@ -84,6 +95,13 @@ body {
 #error_msg {
     text-align: center;
     color: red;
+    margin-bottom: 15px ;
+}
+
+.row {
+    padding: 0px;
+    padding-left: 0px;
+    --bs-gutter-x: 0px;
 }
 
 

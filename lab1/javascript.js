@@ -77,18 +77,23 @@ function createMsgTag(msg) {
         console.log("changed checkbox state = " + checkbox.checked)
         if (checkbox.checked) {
             setCookie(msg.message, msg.index, 1)
+            let p = document.getElementById(msg.index)
+            p.style.backgroundColor = "darkgray"
         }
         else {
             setCookie(msg.message, msg.index, 0)
+            let p = document.getElementById(msg.index)
+            p.style.backgroundColor = "lightblue"
         }
     })
     message = msg.message //extrahera enbart meddelandet ur message
     //console.log("Create msg tag message is = " + message)
     const para = document.createElement("p")
+    para.id = msg.index
     const node = document.createTextNode(message)
     let div = document.createElement("div")
     div.classList.add("div2")
-    div.classList.add("col-md-8")
+    /*div.classList.add("col-md-12")*/
     div.classList.add("row")
     
     para.appendChild(node);
