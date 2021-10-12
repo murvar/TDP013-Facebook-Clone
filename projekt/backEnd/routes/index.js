@@ -195,6 +195,7 @@ router.post(('/friends/:userID'), (req, res) => {
     dbo.collection("users").findOne(myquery, function(err, result) {
       if (err) {
         res.sendStatus(500)
+        db.close();
       } 
       else if (result != null) {
         //kolla om användarIDet finns i results.friends array
@@ -205,9 +206,11 @@ router.post(('/friends/:userID'), (req, res) => {
           dbo.collection("users").findOne(userquery, function(err, result) {
             if (err) {
               res.sendStatus(500)
+              db.close();
             } 
             else if (result != null) {
               res.send({wall: result.wall})
+              db.close();
             } 
             else {
               console.log("no result found!")
