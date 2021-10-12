@@ -1,21 +1,27 @@
-export async function login(username, password) {
+import jsSHA from 'jssha';
+
+export function login(username, password) {
     let hashedPassword = hashMyPassword(password)
+    console.log("in server fetch with data username: " + username + " and pw : " + hashedPassword)
     fetch('http://localhost:3000/login', {
         method: 'POST', 
         headers : {
             'Content-Type': 'application/json'
         },
-        body : {"username": username, "password" : hashedPassword}
+        body : JSON.stringify({username: username, password: hashedPassword})
     })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            else {
-                console.log("Signing in")
-                return(response.sessionID)
-            }
-        })
+        // .then((response) => {
+        //     if (!response.ok) {
+        //         throw new Error('Network response was not ok');
+        //     }
+        //     else {
+        //         console.log("Signing in with ID: " + response.body)
+        //         response.text().then((res) => console.log(res))
+        //         return(await response.json().sessionID)
+        //     }
+        // })
+        .then(response => response.json())
+        .then(data => data.sessionID)
         .catch(err => {
             console.error('There has been a problem with your fetch operation:', err);
         });
@@ -29,7 +35,7 @@ function hashMyPassword(password) {
   }
 
 
-async function register(username, password) { 
+export async function registerFetch(username, password) { 
     let hashedPassword = hashMyPassword(password)
 
     fetch('http://localhost:3000/register', {
@@ -37,7 +43,7 @@ async function register(username, password) {
         headers : {
             'Content-Type': 'application/json'
         },
-        body : {"username": username, "password" : hashedPassword}
+        body : JSON.stringify({"username": username, "password" : hashedPassword})
     })
         .then((response) => {
             if (!response.ok) {
@@ -60,7 +66,7 @@ async function logout(sessionID) {
         headers : {
             'Content-Type': 'application/json'
         },
-        body : {"sessionID" : sessionID}
+        body : JSON.stringify({sessionID: sessionID})
     })
         .then((response) => {
             if (!response.ok) {
@@ -83,7 +89,7 @@ async function friends(sessionID) {
         headers : {
             'Content-Type': 'application/json'
         },
-        body : {"sessionID" : sessionID}
+        body : JSON.stringify({"sessionID" : sessionID})
     })
         .then((response) => {
             if (!response.ok) {
@@ -99,14 +105,15 @@ async function friends(sessionID) {
         });
 }
 
-async function wall(userID, sessionID) { 
-
-    fetch('http://localhost:3000/friends/:userID', {
+export async function wall(userID, sessionID) { 
+    console.log(userID)
+    console.log(sessionID)
+    fetch('http://localhost:3000/friends/' + userID, {
         method: 'POST', 
         headers : {
             'Content-Type': 'application/json'
         },
-        body : {"userID" : userID, "sessionID" : sessionID}
+        body : JSON.stringify({sessionID : sessionID})
     })
         .then((response) => {
             if (!response.ok) {
@@ -114,7 +121,11 @@ async function wall(userID, sessionID) {
             }
             else {
                 console.log("Fetching " + userID + "´s wall")
-                return(response.wall, response.userID)
+                // console.dir(response.json())
+                response.json().then(data => {
+                    return data
+                })
+                //return response.json()
             }
         })
         .catch(err => {
@@ -122,14 +133,14 @@ async function wall(userID, sessionID) {
         });
 }
 
-async function homeWall(userID, sessionID) { 
+export async function homeWall(sessionID) { 
 
     fetch('http://localhost:3000/', {
         method: 'POST', 
         headers : {
             'Content-Type': 'application/json'
         },
-        body : {"sessionID" : sessionID}
+        body : JSON.stringify({"sessionID" : sessionID})
     })
         .then((response) => {
             if (!response.ok) {
@@ -174,7 +185,7 @@ async function toggleFriendRequest(userID, sessionID) {
         headers : {
             'Content-Type': 'application/json'
         },
-        body : {"userID" : userID, "sessionID" : sessionID}
+        body : JSON.stringify({"userID" : userID, "sessionID" : sessionID})
     })
         .then((response) => {
             if (!response.ok) {
@@ -198,7 +209,7 @@ async function answerFriendRequest(userID, sessionID, answer) {
         headers : {
             'Content-Type': 'application/json'
         },
-        body : {"userID" : userID, "sessionID" : sessionID, "answer" : answer}
+        body : JSON.stringify({"userID" : userID, "sessionID" : sessionID, "answer" : answer})
     })
         .then((response) => {
             if (!response.ok) {
@@ -219,14 +230,17 @@ async function answerFriendRequest(userID, sessionID, answer) {
         });
 }
 
-async function postMsg(userID, sessionID, msg) { 
+export async function postMsg(userID, sessionID, msg) { 
 
+    console.log(userID)
+    console.log(sessionID)
+    console.log(msg)
     fetch('http://localhost:3000/addMsg/' + userID, {
-        method: 'POST', 
+        method: 'POST',
         headers : {
             'Content-Type': 'application/json'
         },
-        body : {"userID" : userID, "sessionID" : sessionID, "msg" : msg}
+        body : JSON.stringify({userID: userID, sessionID: sessionID, msg: msg})
     })
         .then((response) => {
             if (!response.ok) {

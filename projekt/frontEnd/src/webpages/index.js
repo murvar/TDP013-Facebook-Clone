@@ -10,10 +10,12 @@ import Home from './home';
 import Register from './register';
 import Login from './Login';
 import Search from './search';
+import Profile from './profile'
 const Webpages = () => {
     return(
         <Router>
             <Route exact path="/" component= {Home} />
+            <Route path = "/profile/:id" component = {Profile} />
             <Route path = "/register" component = {Register} />
             <Route path = "/Login" component = {Login} />
             <Route path = "/search" component = {Search} />
