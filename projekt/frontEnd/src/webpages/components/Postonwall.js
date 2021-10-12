@@ -11,7 +11,7 @@ export default function postOnWall() {
   const postHandler = async () => {
     let msg = document.getElementById("postMSG").value
     console.log(document.cookie)
-    postMsg(userID.id, "674b93fc-2fe0-43fd-ae9d-2e4637ac617e", msg)
+    postMsg(userID.id, "c7c8f3e7-a35c-4919-a49d-a108cf7c8c53", msg)
     history.push('/profile/' + userID.id)
     //<Redirect  to="/" />
     //console.log(document.cookie)

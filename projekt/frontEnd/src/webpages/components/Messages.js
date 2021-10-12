@@ -15,7 +15,7 @@ export default function Messages() {
     //Hämta alla meddelanden för ett specifikt användarnamn och sessionID
     //Kolla URL, om inte "/" skall serverFetch.wall anropas, annars serverFectch.homeWall
     //hämta
-    let sessionID = "674b93fc-2fe0-43fd-ae9d-2e4637ac617e";
+    let sessionID = "c7c8f3e7-a35c-4919-a49d-a108cf7c8c53";
     let userID = useParams()
     /*
     function MessageObject(data) {
@@ -39,8 +39,8 @@ export default function Messages() {
 
             let allMessages = wall(userID.id, sessionID)
             //console.log(allMessages[1])
-            const listItems = await allMessages.map((msg) =>
-            console.log(msg))
+            
+            console.log(allMessages)
         } else {
             //Logik för om userId ej anges
             console.log("Logic has not been implemented @ messages.js")

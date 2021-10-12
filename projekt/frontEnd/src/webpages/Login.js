@@ -17,7 +17,7 @@ export default function Login() {
     //console.log(sessionID)
     //document.cookie = "sessionID = " + sessionID
     console.log(document.cookie)
-    history.push('/')
+    //history.push('/')
   
   }
 
