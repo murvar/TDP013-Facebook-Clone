@@ -8,6 +8,7 @@
     "coverage": "nyc --reporter=html npm test"
   },
   "dependencies": {
+    "ajax": "^0.0.4",
     "async": "^3.2.1",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",

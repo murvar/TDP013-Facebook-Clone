@@ -7,8 +7,7 @@ const {
   v1: uuidv1,
   v4: uuidv4,
 } = require('uuid');
-let url = "mongodb://localhost:27017/";
-
+let url = "mongodb://localhost:27017/"
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -22,6 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 // returnerna en session ID/Token
 
 router.post("/login", (req, res) => {
+  console.log("entering login")
   let username = req.body.username;
   let pw = req.body.password;
   let myquery = { userID: username, password: pw}
@@ -31,21 +31,26 @@ router.post("/login", (req, res) => {
     dbo.collection("users").findOne(myquery, function(err, result) {
       if (err) {
         res.sendStatus(500)
+
       } 
       else if (result != null) {
         
         //Skapar sessionID
         let sessionIDvalue = uuidv4();
         let newSessionID = { $set: {sessionID: sessionIDvalue} };
+        console.log(sessionIDvalue)
         
         dbo.collection("users").updateOne(myquery, newSessionID, function(err, result2) {
           if (err) {
             db.close();
             res.sendStatus(500)
+ 
           }
           else {
             db.close()
-            res.status(200).send(sessionIDvalue)
+            console.log("all is well")
+            res.send({sessionID: sessionIDvalue})
+  
           }
         });
       } 
@@ -53,6 +58,7 @@ router.post("/login", (req, res) => {
         //If we dont find a result
         res.sendStatus(500)
         db.close();
+
       }
     })
   })
@@ -156,7 +162,7 @@ router.post(('/friends'), (req, res) => {
         res.sendStatus(500)
       } 
       else if (result != null) {
-        res.send(result.friends)
+        res.send({friends: result.friends})
         db.close();
 
       } 
@@ -166,7 +172,6 @@ router.post(('/friends'), (req, res) => {
         db.close();
       }
     })
-    
   })
 })
 
@@ -202,7 +207,7 @@ router.post(('/friends/:userID'), (req, res) => {
               res.sendStatus(500)
             } 
             else if (result != null) {
-              res.send({ "wall" : result.wall, "userID" : result.userID})
+              res.send({wall: result.wall})
             } 
             else {
               console.log("no result found!")
@@ -240,7 +245,7 @@ router.post(('/'), (req, res) => {
         res.sendStatus(500)
       } 
       else if (result != null) {
-        res.send({ "wall" : result.wall, "userID" : result.userID})
+        res.send({ "wall" : result.wall, "userID" : result.userID}).status(200)
       } 
       else {
         console.log("no result found!")
@@ -324,19 +329,41 @@ router.patch(('/request/:userID'), (req, res) => {
               res.sendStatus(500)
             } 
             else if (result != null) {
+              
               if(result.requests.find(element => element == requesterUserID)) {
                 //uppdatera requests och kör updateOne på user
-                result.requests //TA BORT requestUserID från denna
-                //sen ska vi uppdatera användaren i databasen
-              }
+                result.requests.pop(requesterUserID);
 
+                let newRequestObject = { $set: {requests: result.requests} };
+                dbo.collection("users").updateOne(myquery, newRequestObject, function(err, result2) {
+                  if (err) {
+                    db.close();
+                    res.sendStatus(500)
+                  }
+                  else {
+                    db.close()
+                    res.sendStatus(200)
+                  }
+                });
+              }
               else {
-                //lägg till i requests och kör updateOne på user
+                result.requests.push(requesterUserID);
+                let newRequestObject = { $set: {requests: result.requests} };
+                //let myquery = { userID: result.usedID };
+                dbo.collection("users").updateOne(myquery, newRequestObject, function(err, result2) {
+                  if (err) {
+                    db.close();
+                    res.sendStatus(500)
+                  }
+                  else {
+                    db.close()
+                    res.sendStatus(200)
+                  }
+                });
               }
-
             }
             else {
-              console.log("no result found!")
+              console.log("no result found 1!")
               res.sendStatus(500)
               db.close();
             }
@@ -344,7 +371,7 @@ router.patch(('/request/:userID'), (req, res) => {
         }
       }
       else {
-        console.log("no result found!")
+        console.log("no result found 2!")
         res.sendStatus(500)
         db.close();
       }
@@ -361,69 +388,150 @@ router.patch(('/request/:userID'), (req, res) => {
 // ta bort pending invite från sessionID. 
 // return status (ok t.ex.)
 
-//--------------------------------------------------------------------
-//Logged in and posting msg
-router.post('/friends/:userID/msg', (req, res) => {
-  console.log(req.body)
-  if (validateMsg(req.body)) {
-    msg = sanitize(req.body)
-    const regex = new RegExp(/<script>/)  //injection?
-    if (!regex.test(msg)) {
-      let user = req.params.userID;
-      let id = req.body.sessionID;
-      let myquery = { sessionID: id}
+//KOLLA OM SESSION ID FINNS
+//KOLLA OM ANVÄNDAR ID FINNS I SESSION REQUESTS
+//KOLLA OM BOOL VARIABEL ÄR SANN ELLER FALSK
+//__OM SANN AccEPTERA REQUEST; PLOCKA BORT REQUEST OCH PLACERA ANVÄNDER ID I VÄNNER (för sessionID)
+//__OM FALSK NEKA REQUEST; PLOCKA BORT REQUEST FRÅN REQUESTS (för sessionID)
+router.patch("/requests", (req, res) => {
+  let id = req.body.sessionID;
+  let requester = req.body.userID;
+  let myquery = { sessionID: id}
+  let answer = req.body.answer;
 
-      MongoClient.connect(url, (err, db) => {
-        let dbo = db.db("tvitter");
-        dbo.collection("users").findOne(myquery, function(err, result) {
-          if (err) {
-            res.sendStatus(500)
-          } 
-          else if (result != null) { 
-            if(result.friends.find(element => element == user)) {
-              let userquery = { userID: user}
-              dbo.collection("users").findOne(userquery, function(err, result) {
-                if (err) {
-                  res.sendStatus(500)
-                } 
-                else if (result != null) {
-                  //add msg to friends wall
-                  dbo.collection('wall').insertOne(msg, function(err, result) {
-                    if (err) {throw err}
-                    else {
-                      db.close();
-                      res.sendStatus(200)
-                    }
-                  })
-                } 
-                else {
-                  console.log("no result found!")
-                  res.sendStatus(500)
-                  db.close();
-                }
-              })
-            }
+  MongoClient.connect(url, (err, db) => {
+    let dbo = db.db("tvitter");
+    dbo.collection("users").findOne(myquery, function(err, result) {
+      if (err) {
+        console.log("1")
+        res.sendStatus(500)
+      } 
+      else if (result != null) {
+        if(result.requests.find(element => element == requester)) {
+          if (answer) {
+            //ACCEPTERA
+            let sessionUserID = result.userID;
+            result.requests.pop(requester)
+            result.friends.push(requester)
+            let newValues = { $set: {requests: result.requests, friends: result.friends} };
+            dbo.collection("users").updateOne(myquery, newValues, function(err, result2) {
+              if (err) {
+                db.close();
+                res.sendStatus(500)
+              }
+              else {
+                myquery = { userID: requester}
+                dbo.collection("users").findOne(myquery, function(err, result) {
+                  if (err) {
+                    res.sendStatus(500)
+                  } 
+                  else if (result != null) { 
+                    result.friends.push(sessionUserID)
+                    newValues = { $set: {friends: result.friends} };
+                    dbo.collection("users").updateOne(myquery, newValues, function(err, result2) {
+                      if (err) {
+                        db.close();
+                        res.sendStatus(500)
+                      }
+                      else {
+                        res.sendStatus(200)
+                      }
+                    });
+                  }
+                })
+              }
+            });
+            
           }
-        })
-      })
-    }
-  }
-  res.sendStatus(500)
+          else {
+            //NEKA
+            result.requests.pop(requester)
+            let newValues = { $set: {requests: result.requests} };
+            dbo.collection("users").updateOne(myquery, newValues, function(err, result2) {
+              if (err) {
+                db.close();
+                res.sendStatus(500)
+              }
+              else {
+                db.close()
+                res.sendStatus(200)
+              }
+            });
+          }
+        }
+        else {
+          res.status(500).send("nothing found!")
+          db.close();
+        }
+      } 
+      else {
+        //If we dont find a result
+        res.status(500).send("nothing found!")
+        db.close();
+      }
+    })
+  })
 })
 
-function validateMsg(body) {
-  if (body.msg.length === 0 || body.msg.length > 140) { return false }
+
+//--------------------------------------------------------------------
+//Logged in and posting msg
+router.post('/addMsg/:userID', (req, res) => {
+
+  let msg = req.body.msg;
+  let user = req.params.userID;
+  let id = req.body.sessionID;
+  let myquery = {sessionID: id}
+
+  MongoClient.connect(url, (err, db) => {
+    let dbo = db.db("tvitter");
+    dbo.collection("users").findOne(myquery, function(err, result) {
+      let sender = result.userID;
+      if (err) {
+        res.sendStatus(500)
+      } 
+      else if (result != null) { 
+        
+        if(result.friends.find(element => element == user) || result.userID == user) {
+          console.log("HERE")
+          let userquery = { userID: user}
+          dbo.collection("users").findOne(userquery, function(err, result) {
+            if (err) {
+              res.sendStatus(500)
+            } 
+            else if (result != null) {
+              //add msg to friends wall 
+              let date =  new Date()               
+              let msgObject = {msg: msg, time: date, sender: sender};
+              result.wall.push(msgObject)
+              let newValues = { $set: {wall: result.wall} };
+              dbo.collection("users").updateOne(userquery, newValues, function(err, result2) {
+                if (err) {
+                  db.close();
+                  res.sendStatus(500)
+                } else {
+                  res.send({"msg" : msgObject}).status(200)
+                }
+              })
+            } 
+            else {
+              console.log("no result found!")
+              res.sendStatus(500)
+              db.close();
+            }
+          })
+        }
+      }
+    })
+  })
+})
+
+function validateMsg(msg) {
+  if (msg.length === 0 || msg.length > 140) { return false }
   // if (!(typeof(body.id) === "string"))                        { return false }
   // if (typeof(body.state) !== "boolean")                 { return false }
   return true
 }
-// params = sessionID, användarID/sessionID, msg
-// om har tillåtelse att posta, lägg till meddelande på vägg med tid
-// och sender. Meddelanden är objekt i databsen som består av msg, time och sender
-// returnerar en status (och kanske relaod på page)
-
-
-
 
 app.use(function (req, res) {
   //console.log("found it")
@@ -433,11 +541,3 @@ app.use(function (req, res) {
 
 module.exports = router;
 
-
-/*använd asynkrona anrop för att hämta och lagra data. 
-Kan ta in en resolve och reject funktion. 
-Med detta kan vi skicka rätt felmeddelanden.
-en backend fil som hanterar logik
-en testfil som representerar klient-logiken 
-(alltså om vi klickar på en knapp kommer meddelande x
-skickas t.ex)*/
