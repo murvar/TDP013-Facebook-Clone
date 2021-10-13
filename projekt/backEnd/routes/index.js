@@ -476,6 +476,31 @@ router.patch("/requests", (req, res) => {
   })
 })
 
+router.post('/getInvites', (req, res) => {
+
+  let id = req.body.sessionID;
+  let myquery = {sessionID: id}
+
+  MongoClient.connect(url, (err, db) => {
+    let dbo = db.db("tvitter");
+    dbo.collection("users").findOne(myquery, function(err, result) {
+      if (err) {
+        res.sendStatus(500)
+        db.close();
+      } 
+      else if (result != null) { 
+        res.send({invites: result.requests})
+        db.close();
+      }
+      else {
+        res.status(500).send("nothing found!")
+        db.close();
+      }
+    })
+  })
+
+})
+
 
 //--------------------------------------------------------------------
 //Logged in and posting msg
@@ -489,12 +514,11 @@ router.post('/addMsg/:userID', (req, res) => {
   MongoClient.connect(url, (err, db) => {
     let dbo = db.db("tvitter");
     dbo.collection("users").findOne(myquery, function(err, result) {
-      let sender = result.userID;
       if (err) {
         res.sendStatus(500)
       } 
       else if (result != null) { 
-        
+        let sender = result.userID;
         if(result.friends.find(element => element == user) || result.userID == user) {
           console.log("HERE")
           let userquery = { userID: user}
