@@ -258,7 +258,7 @@ export async function getMySentRequests(sessionID) {
             return res.json()
         })
         .then((data) => {
-            return(data.inrequests)
+            return(data.invites)
         })
         .catch(err => {
             console.error('There has been a problem with your fetch operation:', err);

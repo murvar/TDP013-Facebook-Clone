@@ -14,7 +14,7 @@ export default function Searchresults() {
     React.useEffect(() => {
         search(searchValue)
         .then(res => {
-            console.log("running useEffect in SearchResults")
+            console.log("running useEffect for search")
             return res
         })
         .then(data => {
@@ -23,7 +23,7 @@ export default function Searchresults() {
 
         friends(sessionID)
         .then(res => {
-            console.log("running useEffect in SearchResults")
+            console.log("running useEffect for friends")
             return res
         })
         .then(data => {
@@ -33,7 +33,7 @@ export default function Searchresults() {
         /* IMPLEMENTERA RÄTT FUNKTIONSNAMN HÄR från SERVERFETCH  */
         getMySentRequests(sessionID)
         .then(res => {
-            console.log("running useEffect in SearchResults")
+            console.log("running useEffect for mySentRequests")
             return res
         })
         .then(data => {
@@ -53,10 +53,7 @@ export default function Searchresults() {
     return (
         <div>
             <h2>Search Results:</h2>
-            {searchArray && friendsArray  && searchArray.map((elem) => {
-                console.log(searchArray)
-                console.log(sentRequestsArray)
-                console.log(friendsArray)
+            {searchArray && friendsArray && searchArray.map((elem) => {
 
                 return (<div key={elem.userID}>
                         {(() => {
@@ -77,7 +74,7 @@ export default function Searchresults() {
                                                 <input
                                                     name="Add friend"
                                                     type="checkbox"
-                                                    id={elem.userID}
+                                                    id={elem.userID + "checkbox"}
                                                     //defaultChecked={sentRequestsArray.includes(elem.userID)}
                                                     onChange={(e) => toggleFriendRequestHandler(e, elem.userID)}
                                                     />
