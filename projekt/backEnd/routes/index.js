@@ -279,7 +279,7 @@ router.get(('/search/:id'), (req, res) => {
       else if (result != null) {
         let userList = [];
         for (let i = 0; i < result.length; i++) {
-          userList.push(result[i].userID)
+          userList.push(result[i])
         }
         res.send(userList);
       } 
