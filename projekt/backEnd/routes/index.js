@@ -337,7 +337,7 @@ router.patch(('/request/:userID'), (req, res) => {
                 //uppdatera requests och kör updateOne på user
                 result.requests.pop(requesterUserID);
 
-                let newRequestObject = { $set: {requests: result.requests} };
+                let newRequestObject = { $set: {requests: result.inrequests} };
                 dbo.collection("users").updateOne(myquery, newRequestObject, function(err, result2) {
                   if (err) {
                     db.close();
@@ -476,7 +476,7 @@ router.patch("/requests", (req, res) => {
   })
 })
 
-router.post('/getInvites', (req, res) => {
+router.post('/getMyRequests', (req, res) => {
 
   let id = req.body.sessionID;
   let myquery = {sessionID: id}
@@ -489,7 +489,32 @@ router.post('/getInvites', (req, res) => {
         db.close();
       } 
       else if (result != null) { 
-        res.send({invites: result.requests})
+        res.send({invites: result.inrequests})
+        db.close();
+      }
+      else {
+        res.status(500).send("nothing found!")
+        db.close();
+      }
+    })
+  })
+
+})
+
+router.post('/getMySentRequests', (req, res) => {
+
+  let id = req.body.sessionID;
+  let myquery = {sessionID: id}
+
+  MongoClient.connect(url, (err, db) => {
+    let dbo = db.db("tvitter");
+    dbo.collection("users").findOne(myquery, function(err, result) {
+      if (err) {
+        res.sendStatus(500)
+        db.close();
+      } 
+      else if (result != null) { 
+        res.send({invites: result.outrequests})
         db.close();
       }
       else {
