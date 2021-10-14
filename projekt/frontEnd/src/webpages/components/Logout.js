@@ -1,15 +1,24 @@
 import React from 'react';
 import {useHistory} from 'react-router-dom';
-import serverFetch from './../../serverFetch';
+import {logout, getCookie} from './../../serverFetch';
 
 
 export default function Logout() {
     let history = useHistory();
 
-    const logoutHandler = async () => {
-        let sessionID = "2c43e859-36d3-4ce1-a8c4-823d1c9448c0"       
-        if (serverFetch.logout(sessionID)) {history.push('/login')}
-        else {console.log("You could not be signed out")}
+    const logoutHandler = async (e) => {
+        e.preventDefault()
+        let sessionID = getCookie()
+        
+        let logoutPromise = logout(sessionID)
+
+        logoutPromise.then(
+        function(res) {
+            history.push('/login')
+        },
+        function(error) {
+            console.log("You could not be signed out")
+        })   
     }
 
     return (

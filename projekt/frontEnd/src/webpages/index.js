@@ -18,7 +18,7 @@ const Webpages = () => {
             <Route path = "/profile/:id" component = {Profile} />
             <Route path = "/register" component = {Register} />
             <Route path = "/Login" component = {Login} />
-            <Route path = "/search" component = {Search} />
+            <Route path = "/search/:searchValue" component = {Search} />
         </Router>
     );
 };

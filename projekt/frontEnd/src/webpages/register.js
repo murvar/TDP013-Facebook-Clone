@@ -1,6 +1,5 @@
 import React from 'react'
 import {useHistory} from 'react-router-dom';
-//import serverFetch from './../serverFetch';
 import {registerFetch} from './../serverFetch'
 
 export default function register() {

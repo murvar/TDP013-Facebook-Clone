@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom'
-import {wall, getCookie} from './../../serverFetch'
+import {friends, getCookie} from './../../serverFetch'
 //let serverFetch = require("./../../serverFetch.js")
 
 /* Baserar kod på https://youtu.be/OdNEg-tja70 /
@@ -10,32 +10,33 @@ import {wall, getCookie} from './../../serverFetch'
     Html-elementen skall wrappas i en div och sedan returneras.
 */
 
-export default function Messages() {
+export default function Friends() {
     
-    const [msgArray, setMsgArray] = React.useState([]);
-    const userID = useParams()
+    const [friendArray, setFriendArray] = React.useState([]);
     let sessionID = getCookie()
-
     React.useEffect(() => {
-        wall(userID.id, sessionID)
+        friends(sessionID)
         .then(res => {
-            console.log("running useEffect in Messages")
+            console.log("running useEffect in Friends")
             return res
         })
         .then(data => {
-            setMsgArray(data)
+            setFriendArray(data)
         })
     
     }, [])
 
-
     
     return (
         <div>
-            <h2>MESSAGES</h2>
-            {msgArray && msgArray.map((elem) => {
-                return <li key={elem.time}>{elem.msg}</li>;
-            })}
+            <h3>Friends: </h3>
+            {friendArray && friendArray.map((elem) => {
+                return (
+                    <div className="friend" key={elem}>
+                    <a href={"/profile/" + elem}>{elem}</a>
+                    </div>
+                    )
+                })}
         </div>
     )
 }

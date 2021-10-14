@@ -1,30 +1,32 @@
 import React from 'react'
 import {useHistory} from 'react-router-dom';
-let serverFetch = require("./../serverFetch.js")
-
+import {login} from '../serverFetch'
 
 export default function Login() {
 
   let history = useHistory();
-  const loginHandler = async () => {
+  const loginHandler = async (e) => {
+    e.preventDefault()
     let username = document.getElementById("loginUsername").value
     let password = document.getElementById("loginPassword").value
-    console.log(username + password)
+    console.log(username + ", " + password)
     
 
-    serverFetch.login(username, password)
-      .then((res) => document.cookie = "sessionID = " + res)
-    //console.log(sessionID)
-    //document.cookie = "sessionID = " + sessionID
-    console.log(document.cookie)
-    //history.push('/')
-  
+    let loginPromise = login(username, password)
+
+    loginPromise.then(
+      function(value) {
+        document.cookie = "sessionID=" + value;
+        history.push('/profile/Tjatte')
+      },
+      function(error) {
+        console.log(error)
+      }
+    )
   }
-
-
   return (
     <div>
-      <form>
+      <form method="post">
         <label htmlFor="username">Username:</label><br />
         <input
           type="text"
@@ -48,9 +50,3 @@ export default function Login() {
     </div>
   )
 }
-
-/*
-{() => {
-          history.push('/home')
-          }} 
-*/
