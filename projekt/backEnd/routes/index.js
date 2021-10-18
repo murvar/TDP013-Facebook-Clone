@@ -334,50 +334,80 @@ router.patch(('/request/:userID'), (req, res) => {
           res.sendStatus(500);
         }
         else {
+          //kolla om user finns i requester.invites
           let myquery = { userID: user };
           let requesterUserID = result.userID;
-          dbo.collection("users").findOne(myquery, function(err, result) {
+          
+          dbo.collection("users").findOne(myquery, function(err, foundUserResult) {
             if (err) {
               res.sendStatus(500)
             } 
-            else if (result != null) {
+            else if (foundUserResult != null) {
               
-              //KOD TAR BORT REQUEST
-              if(result.requests.find(element => element == requesterUserID)) {
+              //KOD TAR BORT REQUEST FRÅN USER
+              //KOD TAR BORT INVITE FRÅN REQUESTER
+              if(foundUserResult.requests.find(element => element == requesterUserID)) {
                 //uppdatera requests och kör updateOne på user
-                result.requests.pop(requesterUserID);
+                foundUserResult.requests.pop(requesterUserID);
+                result.invites.pop(user);
 
-                let newRequestObject = { $set: {requests: result.inrequests} };
+                let newRequestObject = { $set: {requests: foundUserResult.inrequests} };
+                //UPPDATERA USER TA BORT REQUEsT
                 dbo.collection("users").updateOne(myquery, newRequestObject, function(err, result2) {
                   if (err) {
                     db.close();
                     res.sendStatus(500)
                   }
                   else {
-                    db.close()
-                    res.sendStatus(200)
+                    //UPPDATERA SELF TA BORT INVITE
+                    let myquery = { sessionID: requester };
+                    let newInviteObject = { $set: {invites: result.invites}};
+                    dbo.collection("users").updateOne(myquery, newInviteObject, function(err, result2) {
+                      if (err) {
+                        db.close();
+                        res.sendStatus(500)
+                      }
+                      else {
+                        db.close()
+                        res.sendStatus(200)
+                      }
+                    });
                   }
                 });
               }
               else {
-                //KOD LÄGGER TILL REQUEST
-                result.requests.push(requesterUserID);
-                let newRequestObject = { $set: {requests: result.requests} };
-                //let myquery = { userID: result.usedID };
+                //KOD LÄGGER TILL REQUEST TILL USER
+                //KOD LÄGGER TILL INVITIE TILL REQUEsTER
+                foundUserResult.requests.push(requesterUserID);
+                result.invites.push(user);
+
+                let newRequestObject = { $set: {requests: foundUserResult.requests} };
+                //UPPDATERA USER LÄGG TILL REQUEsT
                 dbo.collection("users").updateOne(myquery, newRequestObject, function(err, result2) {
                   if (err) {
                     db.close();
                     res.sendStatus(500)
                   }
                   else {
-                    db.close()
-                    res.sendStatus(200)
+                    //UPPDATERA SELF LÄGG TILLL INVITE
+                    let myquery = { sessionID: requester };
+                    let newInviteObject = { $set: {invites: result.invites}};
+                    dbo.collection("users").updateOne(myquery, newInviteObject, function(err, result2) {
+                      if (err) {
+                        db.close();
+                        res.sendStatus(500)
+                      }
+                      else {
+                        db.close()
+                        res.sendStatus(200)
+                      }
+                    });
                   }
                 });
               }
             }
             else {
-              console.log("no result found 1!")
+              console.log("no result found!")
               res.sendStatus(500)
               db.close();
             }
