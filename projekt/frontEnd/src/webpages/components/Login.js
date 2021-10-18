@@ -1,10 +1,14 @@
-import React from 'react'
+import React from "react";
 import {useHistory} from 'react-router-dom';
-import {login} from '../serverFetch'
+import {getCookie, login} from './../../serverFetch'
 
-export default function Login() {
+export default function Login(){
+    let history = useHistory();
 
-  let history = useHistory();
+  if (getCookie("sessionID") !== "") {
+    history.push('/')
+  }
+  
   const loginHandler = async (e) => {
     e.preventDefault()
     let username = document.getElementById("loginUsername").value
@@ -15,9 +19,11 @@ export default function Login() {
     let loginPromise = login(username, password)
 
     loginPromise.then(
+  
       function(value) {
-        document.cookie = "sessionID=" + value;
-        history.push('/profile/Tjatte')
+        document.cookie = "sessionID =" + value;
+        document.cookie = "userID =" + username;
+        history.push('/')
       },
       function(error) {
         console.log(error)
@@ -31,6 +37,7 @@ export default function Login() {
         <input
           type="text"
           name="username"
+          defaultValue={getCookie("userID")}
           id="loginUsername"
         />
         <br />

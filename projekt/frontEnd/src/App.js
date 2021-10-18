@@ -7,7 +7,7 @@ import { getCookie } from './serverFetch';
 
 function App() {
 
-  console.log("Running log from app.js with cookie = " + getCookie())
+  console.log("Running log from app.js with cookie = " + document.cookie)
 
   return (
     <div>

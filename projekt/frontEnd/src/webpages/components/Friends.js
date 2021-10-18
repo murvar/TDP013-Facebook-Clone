@@ -13,7 +13,7 @@ import {friends, getCookie} from './../../serverFetch'
 export default function Friends() {
     
     const [friendArray, setFriendArray] = React.useState([]);
-    let sessionID = getCookie()
+    let sessionID = getCookie("sessionID")
     React.useEffect(() => {
         friends(sessionID)
         .then(res => {

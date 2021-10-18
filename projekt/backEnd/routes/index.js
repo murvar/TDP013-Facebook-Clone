@@ -38,7 +38,6 @@ router.post("/login", (req, res) => {
         //Skapar sessionID
         let sessionIDvalue = uuidv4();
         let newSessionID = { $set: {sessionID: sessionIDvalue} };
-        console.log(sessionIDvalue)
         
         dbo.collection("users").updateOne(myquery, newSessionID, function(err, result2) {
           if (err) {
@@ -48,7 +47,6 @@ router.post("/login", (req, res) => {
           }
           else {
             db.close()
-            console.log("all is well")
             res.send({sessionID: sessionIDvalue})
   
           }
@@ -115,21 +113,17 @@ router.patch("/logout", (req, res) => {
     let dbo = db.db("tvitter");
     dbo.collection("users").findOne(myquery, function(err, result) {
       if (err) {
-        console.log("1")
         res.sendStatus(500)
       } 
       else if (result != null) {
-        console.log("2")
         let sessionIDvalue = uuidv4();
         let newSessionID = { $set: {sessionID: sessionIDvalue} };
         dbo.collection("users").updateOne(myquery, newSessionID, function(err, result2) {
           if (err) {
-            console.log("3")
             db.close();
             res.sendStatus(500)
           }
           else {
-            console.log("we here")
             db.close()
             res.sendStatus(200)
           }
@@ -162,6 +156,7 @@ router.post(('/friends'), (req, res) => {
         res.sendStatus(500)
       } 
       else if (result != null) {
+        console.log("loading friend list")
         res.send({friends: result.friends})
         db.close();
 
@@ -177,7 +172,7 @@ router.post(('/friends'), (req, res) => {
 
 
 // Om inloggad vill vi ha åtkomst till vänner profil
-// params = session ID och användarID(användar Id för vän)
+// params = session ID och användarID(användar Id för vän)  
 // identifierar användarID för sessionID, kollar om användarID(för vän) har 
 // användarID (från sessionID) som vän. 
 // Om inte vän, returnera status
@@ -185,6 +180,7 @@ router.post(('/friends'), (req, res) => {
 // returnerar namn OCH alla meddelanden som skall vara på väggen för vän
 
 router.post(('/friends/:userID'), (req, res) => {
+  console.log("loading messages")
 
   let user = req.params.userID;
   let id = req.body.sessionID;
@@ -200,8 +196,15 @@ router.post(('/friends/:userID'), (req, res) => {
       else if (result != null) {
         //kolla om användarIDet finns i results.friends array
         //om det finns hämta väggen för användarIDet
+        console.log(result.userID + " & " + user)
 
-        if(result.friends.find(element => element == user)) {
+        if(result.userID === user) {
+            res.send({wall: result.wall})
+            db.close();
+          } 
+
+
+        else if(result.friends.find(element => element == user)) {
           let userquery = { userID: user}
           dbo.collection("users").findOne(userquery, function(err, result) {
             if (err) {
@@ -218,6 +221,11 @@ router.post(('/friends/:userID'), (req, res) => {
               db.close();
             }
           })
+        }
+        else {
+          console.log("Weird ass problem!")
+          res.sendStatus(500)
+          db.close();
         }
       } 
       else {
@@ -514,6 +522,7 @@ router.post('/getMySentRequests', (req, res) => {
         db.close();
       } 
       else if (result != null) { 
+        console.log(result.outrequests)
         res.send({invites: result.outrequests})
         db.close();
       }

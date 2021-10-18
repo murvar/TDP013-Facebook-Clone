@@ -8,12 +8,14 @@ export default function Logout() {
 
     const logoutHandler = async (e) => {
         e.preventDefault()
-        let sessionID = getCookie()
+        let sessionID = getCookie("sessionID")
         
         let logoutPromise = logout(sessionID)
 
         logoutPromise.then(
         function(res) {
+            document.cookie = "sessionID =" + "";
+            // document.cookie = "userID =" + username;
             history.push('/login')
         },
         function(error) {

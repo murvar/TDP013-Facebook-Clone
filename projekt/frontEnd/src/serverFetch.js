@@ -12,7 +12,7 @@ function hashMyPassword(password) {
   export async function login(username, password) { 
     let hashedPassword = hashMyPassword(password)
 
-    const returnPromise = fetch('http://localhost:3000/login', {
+    const loginPromise = fetch('http://localhost:3000/login', {
         method: 'POST', 
         headers : {
             'Content-Type': 'application/json'
@@ -35,7 +35,7 @@ function hashMyPassword(password) {
         console.error('There has been a problem with your fetch operation:', err);
     });
 
-    return returnPromise
+    return loginPromise
 }
 
 
@@ -109,6 +109,7 @@ export async function friends(sessionID) {
 }
 
 export async function wall(userID, sessionID) { 
+
     const wallPromise = fetch('http://localhost:3000/friends/' + userID, {
         method: 'POST', 
         headers : {
@@ -127,7 +128,7 @@ export async function wall(userID, sessionID) {
         });
     return wallPromise
 }
-
+/*
 export async function homeWall(sessionID) { 
 
     const homeWallPromise = fetch('http://localhost:3000/', {
@@ -151,7 +152,7 @@ export async function homeWall(sessionID) {
         });
     return homeWallPromise
 }
-
+*/
 export async function search(searchValue) { 
 
     const searchPromise = fetch('http://localhost:3000/search/' + searchValue, {
@@ -289,16 +290,16 @@ export async function postMsg(userID, sessionID, msg) {
         });
 }
 
-export function getCookie() {
-    let name = "sessionID=";
+export function getCookie(cname) {
+    let name = cname +"=";
     let decodedCookie = decodeURIComponent(document.cookie);
     let ca = decodedCookie.split(';');
     for(let i = 0; i <ca.length; i++) {
       let c = ca[i];
-      while (c.charAt(0) == ' ') {
+      while (c.charAt(0) === ' ') {
         c = c.substring(1);
       }
-      if (c.indexOf(name) == 0) {
+      if (c.indexOf(name) === 0) {
         return c.substring(name.length, c.length);
       }
     }

@@ -6,14 +6,19 @@ import {useHistory} from 'react-router-dom';
 export default function postOnWall() {
 
   let history = useHistory()
-  const userID = useParams()
-  let sessionID = getCookie()
+  let userID = useParams().id
+  if (userID == null) {userID = getCookie("userID")}
+  let sessionID = getCookie("sessionID")
 
   const postHandler = async (e) => {
     e.preventDefault()
     let msg = document.getElementById("postMSG").value
-    postMsg(userID.id, sessionID, msg)
-    history.push('/profile/' + userID.id)  
+    postMsg(userID, sessionID, msg)
+    if (userID === getCookie("userID")) {
+      history.push('/')
+    } else {
+      history.push('/profile/' + userID.id)  
+    }
   }
 
 

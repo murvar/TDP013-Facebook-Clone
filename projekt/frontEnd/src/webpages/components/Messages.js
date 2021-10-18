@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom'
-import {wall, getCookie} from './../../serverFetch'
+import {wall, homeWall, getCookie} from './../../serverFetch'
 //let serverFetch = require("./../../serverFetch.js")
 
 /* Baserar kod på https://youtu.be/OdNEg-tja70 /
@@ -13,11 +13,14 @@ import {wall, getCookie} from './../../serverFetch'
 export default function Messages() {
     
     const [msgArray, setMsgArray] = React.useState([]);
-    const userID = useParams()
-    let sessionID = getCookie()
+    let userID = useParams().id
+    if (userID == null) {
+        userID = getCookie("userID")
+    }
+    let sessionID = getCookie("sessionID")
 
     React.useEffect(() => {
-        wall(userID.id, sessionID)
+        wall(userID, sessionID)
         .then(res => {
             console.log("running useEffect in Messages")
             return res
@@ -32,7 +35,7 @@ export default function Messages() {
     
     return (
         <div>
-            <h2>MESSAGES</h2>
+            <h2>MESSAGES:</h2>
             {msgArray && msgArray.map((elem) => {
                 return <li key={elem.time}>{elem.msg}</li>;
             })}
