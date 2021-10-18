@@ -280,7 +280,8 @@ router.get(('/search/:id'), (req, res) => {
   MongoClient.connect(url, (err, db) => {
     let dbo = db.db("tvitter");
     dbo.collection("users").find(myquery).toArray(function (err, result) {
-      console.log(result)
+      // console.log("Results:")
+      // console.log(result)
       if (err) {
         res.sendStatus(500)
       } 
@@ -341,6 +342,7 @@ router.patch(('/request/:userID'), (req, res) => {
             } 
             else if (result != null) {
               
+              //KOD TAR BORT REQUEST
               if(result.requests.find(element => element == requesterUserID)) {
                 //uppdatera requests och kör updateOne på user
                 result.requests.pop(requesterUserID);
@@ -358,6 +360,7 @@ router.patch(('/request/:userID'), (req, res) => {
                 });
               }
               else {
+                //KOD LÄGGER TILL REQUEST
                 result.requests.push(requesterUserID);
                 let newRequestObject = { $set: {requests: result.requests} };
                 //let myquery = { userID: result.usedID };
@@ -489,6 +492,9 @@ router.post('/getMyRequests', (req, res) => {
   let id = req.body.sessionID;
   let myquery = {sessionID: id}
 
+  console.log(id)
+
+
   MongoClient.connect(url, (err, db) => {
     let dbo = db.db("tvitter");
     dbo.collection("users").findOne(myquery, function(err, result) {
@@ -518,15 +524,18 @@ router.post('/getMySentRequests', (req, res) => {
     let dbo = db.db("tvitter");
     dbo.collection("users").findOne(myquery, function(err, result) {
       if (err) {
+        console.log("Err in getMySentRequests")
         res.sendStatus(500)
         db.close();
       } 
-      else if (result != null) { 
-        console.log(result.outrequests)
-        res.send({invites: result.outrequests})
+      else if (result != null) {
+        // console.log(result.invites)
+        console.log("HERE")
+        res.send({invites: result.invites})
         db.close();
       }
       else {
+        console.log("Nothing found")
         res.status(500).send("nothing found!")
         db.close();
       }

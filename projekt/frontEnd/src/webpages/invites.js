@@ -16,9 +16,11 @@ export default function Invites() {
 
     
     return (
-        <Searchfield />
-        <Logout />
-        <InvitesWall />
-        <Friends />
+        <div>
+            <Searchfield />
+            <Logout />
+            <InvitesWall />
+            <Friends />
+        </div>
     )
 }

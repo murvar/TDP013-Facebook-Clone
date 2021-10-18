@@ -3,7 +3,6 @@ import Postonwall from './Postonwall'
 import Messages from './Messages';
 import { useParams } from 'react-router-dom'
 import { getCookie } from '../../serverFetch';
-import Searchfield from './Searchfield';
 
 
 /*  

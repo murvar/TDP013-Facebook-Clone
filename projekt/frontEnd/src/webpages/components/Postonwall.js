@@ -17,7 +17,7 @@ export default function postOnWall() {
     if (userID === getCookie("userID")) {
       history.push('/')
     } else {
-      history.push('/profile/' + userID.id)  
+      history.push('/profile/' + userID)  
     }
   }
 

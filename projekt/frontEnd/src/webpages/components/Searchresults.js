@@ -8,7 +8,7 @@ export default function Searchresults() {
     const [sentRequestsArray, setSentRequestsArray] = React.useState([]);
 
     const searchValue = useParams().searchValue
-    let sessionID = getCookie();
+    let sessionID = getCookie("sessionID");
     console.log("SearchValue: " + searchValue)
 
     React.useEffect(() => {
@@ -45,7 +45,15 @@ export default function Searchresults() {
     const toggleFriendRequestHandler = async (e, userID) => {
         //e.preventDefault()
         console.log("toggled friend request once")
+        //elem.userID + "checkbox"
         toggleFriendRequest(userID, sessionID)
+    }
+
+    function inList(userID) {
+        console.log(sentRequestsArray)
+        console.log(sentRequestsArray.includes(userID))
+        return(sentRequestsArray.includes(userID))
+
     }
 
 
@@ -53,7 +61,7 @@ export default function Searchresults() {
     return (
         <div>
             <h2>Search Results:</h2>
-            {searchArray && friendsArray && searchArray.map((elem) => {
+            {searchArray && friendsArray && sentRequestsArray && searchArray.map((elem) => {
 
                 return (<div key={elem.userID}>
                         {(() => {
@@ -75,7 +83,7 @@ export default function Searchresults() {
                                                     name="Add friend"
                                                     type="checkbox"
                                                     id={elem.userID + "checkbox"}
-                                                    //defaultChecked={sentRequestsArray.includes(elem.userID)}
+                                                    checked={inList(elem.userID)}
                                                     onChange={(e) => toggleFriendRequestHandler(e, elem.userID)}
                                                     />
                                             </label>

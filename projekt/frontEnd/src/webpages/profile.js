@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import {useHistory} from 'react-router-dom';
+import React from 'react'
 import Wallprofile from './components/Wallprofile';
 import Logout from './components/Logout';
 import Friends from './components/Friends';
