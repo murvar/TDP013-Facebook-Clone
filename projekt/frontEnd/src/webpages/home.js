@@ -4,6 +4,7 @@ import Logout from './components/Logout';
 import Friends from './components/Friends';
 import Searchfield from './components/Searchfield';
 import Home from './components/Home';
+import InviteDropDown from './components/InviteDropDown';
 
 export default function home() {
     return (
@@ -13,6 +14,7 @@ export default function home() {
             <Friends />
             <Logout />
             <Home />
+            <InviteDropDown />
         </div>
     )
 }

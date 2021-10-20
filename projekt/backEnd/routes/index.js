@@ -88,7 +88,7 @@ router.post("/register", (req, res) => {
       else {
         //skapa användarobjekt
         let id = uuidv4();
-        let newUser = {userID: username, password: pw, wall: [], friends: [], requests: [], sessionID: id}
+        let newUser = {userID: username, password: pw, wall: [], friends: [], requests: [], sessionID: id, invites: []}
         dbo.collection('users').insertOne(newUser, function(err, result) {
           if (err) {throw err}
           else {
@@ -100,7 +100,7 @@ router.post("/register", (req, res) => {
     })
   })
 })
-/
+
 // Om användare loggar ut
 // params = session ID
 // ta bort session ID, returna status
@@ -312,7 +312,7 @@ router.get(('/search/:id'), (req, res) => {
 
 //Kolla om redan vänner
 //Kolla om 
-
+//Toggle friend request
 router.patch(('/request/:userID'), (req, res) => {
 
   let user = req.params.userID;
@@ -350,8 +350,8 @@ router.patch(('/request/:userID'), (req, res) => {
                 //uppdatera requests och kör updateOne på user
                 foundUserResult.requests.pop(requesterUserID);
                 result.invites.pop(user);
-
-                let newRequestObject = { $set: {requests: foundUserResult.inrequests} };
+                let myquery = { userID: user };
+                let newRequestObject = { $set: {requests: foundUserResult.requests} };
                 //UPPDATERA USER TA BORT REQUEsT
                 dbo.collection("users").updateOne(myquery, newRequestObject, function(err, result2) {
                   if (err) {
@@ -380,7 +380,8 @@ router.patch(('/request/:userID'), (req, res) => {
                 //KOD LÄGGER TILL INVITIE TILL REQUEsTER
                 foundUserResult.requests.push(requesterUserID);
                 result.invites.push(user);
-
+                let myquery = { userID: user };
+                
                 let newRequestObject = { $set: {requests: foundUserResult.requests} };
                 //UPPDATERA USER LÄGG TILL REQUEsT
                 dbo.collection("users").updateOne(myquery, newRequestObject, function(err, result2) {
@@ -561,6 +562,7 @@ router.post('/getMySentRequests', (req, res) => {
       else if (result != null) {
         // console.log(result.invites)
         console.log("HERE")
+        console.log(result.invites)
         res.send({invites: result.invites})
         db.close();
       }

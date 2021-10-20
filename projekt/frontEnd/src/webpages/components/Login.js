@@ -21,9 +21,17 @@ export default function Login(){
     loginPromise.then(
   
       function(value) {
-        document.cookie = "sessionID =" + value;
-        document.cookie = "userID =" + username;
-        history.push('/')
+          console.log(value)
+          if (value) {
+            document.cookie = "sessionID =" + value;
+            document.cookie = "userID =" + username;
+            history.push('/')
+          }
+          else {
+            let err = document.getElementById('error')
+            let errmsg = document.createTextNode("Wrong username or password!")
+            err.appendChild(errmsg)
+          }
       },
       function(error) {
         console.log(error)
@@ -47,6 +55,7 @@ export default function Login(){
           name="password"
           id="loginPassword"
         /> <br />
+        <div id="error"></div>
 
         <button onClick={loginHandler}
           type="submit" 

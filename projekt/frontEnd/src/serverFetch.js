@@ -33,6 +33,7 @@ function hashMyPassword(password) {
     })
     .catch(err => {
         console.error('There has been a problem with your fetch operation:', err);
+        return(false)
     });
 
     return loginPromise
