@@ -20,6 +20,9 @@ export default function ResultComponent(props) {
     React.useEffect(() => {
         if(firstTimeFlag) {
             setCheckboxToggle(props.sentRequestsArray.includes(props.element.userID))
+            console.log("Checking sentRequestsArray")
+            console.log(props.sentRequestsArray)
+            console.log(props.element.userID)
             setFirstTimeFlag(false)
         }
     }, [])

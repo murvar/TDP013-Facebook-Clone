@@ -1,17 +1,28 @@
 import React from 'react'
+import {getMyRequests, getCookie} from './../../serverFetch'
 
 export default function InviteDropDown() {
-
+    let sessionID = getCookie("sessionID");
 
     const DropdownMenu = () => {
         const dropdownRef = React.useRef(null);
         const [isActive, setIsActive] = React.useState(false);
         const onClick = () => setIsActive(!isActive);
+        const [RequestsArray, setRequestsArray] = React.useState([]);
 
         React.useEffect(() => {
             const pageClickEvent = (e) => {
               console.log(e);
             };
+
+            getMyRequests(sessionID)
+              .then(res => {
+                  console.log("running useEffect for myRequests")
+                  return res
+              })
+              .then(data => {
+                  setRequestsArray(data)
+              })
           
             // If the item is active (ie open) then listen for clicks
             if (isActive) {
@@ -27,15 +38,14 @@ export default function InviteDropDown() {
         return (
           <div className="menu-container">
             <button onClick={onClick} className="menu-trigger">
-              <span>User</span>
-              <img src="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/df/df7789f313571604c0e4fb82154f7ee93d9989c6.jpg" alt="User avatar" />
+              <span>Friend Requests</span>
             </button>
             <nav ref={dropdownRef} className={`menu ${isActive ? 'active' : 'inactive'}`}>
-              <ul>
-                <li><a href="/messages">Messages</a></li>
-                <li><a href="/trips">Trips</a></li>
-                <li><a href="/saved">Saved</a></li>
-              </ul>
+              {RequestsArray && RequestsArray.map((elem) => {
+                console.log("hello")
+              return ( <ul key={elem}> {elem} </ul>   
+              )                                       
+              })}
             </nav>
           </div>
         );

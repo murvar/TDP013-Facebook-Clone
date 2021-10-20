@@ -534,7 +534,7 @@ router.post('/getMyRequests', (req, res) => {
         db.close();
       } 
       else if (result != null) { 
-        res.send({invites: result.inrequests})
+        res.send({requests: result.requests})
         db.close();
       }
       else {

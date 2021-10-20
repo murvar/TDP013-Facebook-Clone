@@ -11,8 +11,9 @@ export default function Searchresults() {
     const [searchArray, setSearchArray] = React.useState([]);
     const [friendsArray, setFriendArray] = React.useState([]);
     const [sentRequestsArray, setSentRequestsArray] = React.useState([]);
+ 
     
-    React.useEffect(() => {
+    React.useEffect (() => {
         search(searchValue)
         .then(res => {
             console.log("running useEffect for search")
@@ -32,26 +33,60 @@ export default function Searchresults() {
         })
 
         /* IMPLEMENTERA RÄTT FUNKTIONSNAMN HÄR från SERVERFETCH  */
+
+        /*
+         const promise1 = new Promise((resolve, reject) => {
+            resolve('Success!');
+        });
+
+        promise1.then((value) => {
+            console.log(value);
+            // expected output: "Success!"
+        });
+        */
         getMySentRequests(sessionID)
-        .then(res => {
+        .then((res) => {
             console.log("running useEffect for mySentRequests")
-            return res
+            console.log("result: ");
+            console.log(res);
+            setSentRequestsArray( res );
+            console.log("done")
         })
-        .then(data => {
-            setSentRequestsArray(data)
-        })
+
+        
+        
     
-    }, [sentRequestsArray])
+    }, [])
+
+    /*function render(){
+
+        return (
+            <div>
+                <h2>Search Results:</h2>
+                {searchArray && friendsArray && sentRequestsArray && searchArray.map((elem) => {
+    
+                    return ( <ResultComponent key={"resultComp"+ elem.userID} friendsArray={friendsArray} sentRequestsArray={sentRequestsArray} element={elem} sessionID={sessionID} />   
+                    )                                       
+                })
+                }
+            </div>
+        )
+    
+    }*/
 
     
-    return (
+   return (
         <div>
             <h2>Search Results:</h2>
             {searchArray && friendsArray && sentRequestsArray && searchArray.map((elem) => {
 
                 return ( <ResultComponent key={"resultComp"+ elem.userID} friendsArray={friendsArray} sentRequestsArray={sentRequestsArray} element={elem} sessionID={sessionID} />   
                 )                                       
-            })}
+            })
+            }
         </div>
     )
 }
+
+
+
