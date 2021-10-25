@@ -1,4 +1,5 @@
-// import '/reset.css'
+import './reset.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import React from 'react';
 import Webpages from "./webpages/index.js"

@@ -1,18 +1,13 @@
 import React from 'react';
 import { useParams } from 'react-router-dom'
 import {wall, homeWall, getCookie} from './../../serverFetch'
-//let serverFetch = require("./../../serverFetch.js")
-
-/* Baserar kod på https://youtu.be/OdNEg-tja70 /
-
-/  Skall hämta alla meddelanden för en profil via databas. Skall
-    konvertera informationen till html-element.
-    Html-elementen skall wrappas i en div och sedan returneras.
-*/
+import Messagecomp from './Messagecomponent'
 
 export default function Messages() {
     
     const [msgArray, setMsgArray] = React.useState([]);
+    const [flag1, setFlag1] = React.useState(false);
+
     let userID = useParams().id
     if (userID == null) {
         userID = getCookie("userID")
@@ -27,6 +22,7 @@ export default function Messages() {
         })
         .then(data => {
             setMsgArray(data)
+            setFlag1(true)
         })
     
     }, [])
@@ -36,8 +32,9 @@ export default function Messages() {
     return (
         <div>
             <h2>MESSAGES:</h2>
-            {msgArray && msgArray.map((elem) => {
-                return <li key={elem.time}>{elem.msg}</li>;
+            {flag1 && msgArray.map((elem) => {
+                return(<Messagecomp key={'mc' + elem.time} time={elem.time} msg={elem.msg} sender={elem.sender} />)
+                //return(<li key={elem.time}>{elem.msg}</li>)
             })}
         </div>
     )

@@ -15,7 +15,9 @@ export default function Home() {
       <form>
         <button onClick={sendHome}
           type="submit" 
-          id="homebutton">
+          id="homebutton"
+          className="btn">
+            <i className="fas fa-home"></i>
           Home
         </button>
       </form>

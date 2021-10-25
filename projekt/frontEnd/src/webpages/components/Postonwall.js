@@ -28,7 +28,7 @@ export default function postOnWall() {
         <input
           type="text"
           name="Message"
-          defaultValue="Write a message!"
+          placeholder="Write a message!"
           id="postMSG"
         />
 

@@ -11,7 +11,11 @@ export default function Searchresults() {
     const [searchArray, setSearchArray] = React.useState([]);
     const [friendsArray, setFriendArray] = React.useState([]);
     const [sentRequestsArray, setSentRequestsArray] = React.useState([]);
- 
+
+
+    const [flag1, setFlag1] = React.useState(false);
+    const [flag2, setFlag2] = React.useState(false);
+    const [flag3, setFlag3] = React.useState(false);
     
     React.useEffect (() => {
         search(searchValue)
@@ -21,6 +25,7 @@ export default function Searchresults() {
         })
         .then(data => {
             setSearchArray(data)
+            setFlag1(true)
         })
         
         friends(sessionID)
@@ -30,6 +35,7 @@ export default function Searchresults() {
         })
         .then(data => {
             setFriendArray(data)
+            setFlag2(true)
         })
 
         /* IMPLEMENTERA RÄTT FUNKTIONSNAMN HÄR från SERVERFETCH  */
@@ -50,6 +56,7 @@ export default function Searchresults() {
             console.log("result: ");
             console.log(res);
             setSentRequestsArray( res );
+            setFlag3(true)
             console.log("done")
         })
 
@@ -78,7 +85,7 @@ export default function Searchresults() {
    return (
         <div>
             <h2>Search Results:</h2>
-            {searchArray && friendsArray && sentRequestsArray && searchArray.map((elem) => {
+            {flag1 && flag2 && flag3 && searchArray.map((elem) => {
 
                 return ( <ResultComponent key={"resultComp"+ elem.userID} friendsArray={friendsArray} sentRequestsArray={sentRequestsArray} element={elem} sessionID={sessionID} />   
                 )                                       

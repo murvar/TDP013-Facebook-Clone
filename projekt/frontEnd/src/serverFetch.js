@@ -214,10 +214,10 @@ export async function answerFriendRequest(userID, sessionID, answer) {
             }
             else {
                 if (answer) {
-                    console.log("Answered friend request from " + userID + + " with yes")
+                    console.log("Answered friend request from " + userID + " with yes")
                 }
                 else {
-                    console.log("Answered friend request from " + userID + + " with no") 
+                    console.log("Answered friend request from " + userID + " with no") 
                 }
                 return(true)
             }

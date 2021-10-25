@@ -1,13 +1,7 @@
 import React from 'react';
-import {friends, getCookie} from './../../serverFetch'
-//let serverFetch = require("./../../serverFetch.js")
+import {friends, getCookie} from './../../serverFetch';
+import Friendcomponent from './friendcomponent';
 
-/* Baserar kod på https://youtu.be/OdNEg-tja70 /
-
-/  Skall hämta alla meddelanden för en profil via databas. Skall
-    konvertera informationen till html-element.
-    Html-elementen skall wrappas i en div och sedan returneras.
-*/
 
 export default function Friends() {
     
@@ -27,14 +21,16 @@ export default function Friends() {
 
     
     return (
-        <div>
+        <div id="friends">
             <h3>Friends: </h3>
             {friendArray && friendArray.map((elem) => {
-                return (
-                    <div className="friend" key={elem}>
-                    <a href={"/profile/" + elem}>{elem}</a>
-                    </div>
-                    )
+                // return (
+                //     <div className="friend" key={elem}>
+                //     <a href={"/profile/" + elem}>{elem}</a>
+                //     </div>
+                //     )
+                return(<Friendcomponent key={elem} name={elem}/>)
+                
                 })}
         </div>
     )

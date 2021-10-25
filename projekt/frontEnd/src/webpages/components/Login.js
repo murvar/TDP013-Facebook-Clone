@@ -1,6 +1,7 @@
 import React from "react";
 import {useHistory} from 'react-router-dom';
 import {getCookie, login} from './../../serverFetch'
+import { Container, Row, Col} from 'react-bootstrap';
 
 export default function Login(){
     let history = useHistory();
@@ -29,8 +30,12 @@ export default function Login(){
           }
           else {
             let err = document.getElementById('error')
-            let errmsg = document.createTextNode("Wrong username or password!")
-            err.appendChild(errmsg)
+            err.style.visibility = "visible";
+            // if (!err.hasChildNodes) {
+            //   let errmsg = document.createTextNode("Wrong username or password!")
+            //   err.appendChild(errmsg)
+            // }
+            
           }
       },
       function(error) {
@@ -38,31 +43,50 @@ export default function Login(){
       }
     )
   }
-  return (
-    <div>
-      <form method="post">
-        <label htmlFor="username">Username:</label><br />
-        <input
-          type="text"
-          name="username"
-          defaultValue={getCookie("userID")}
-          id="loginUsername"
-        />
-        <br />
-        <label htmlFor="password">Password:</label><br />
-        <input
-          type="password"
-          name="password"
-          id="loginPassword"
-        /> <br />
-        <div id="error"></div>
+  // return (
+  //   <Container>
+  //     <form method="post">
+  //       <label htmlFor="username">Username:</label><br />
+  //       <input
+  //         type="text"
+  //         name="username"
+  //         defaultValue={getCookie("userID")}
+  //         id="loginUsername"
+  //       />
+  //       <br />
+  //       <label htmlFor="password">Password:</label><br />
+  //       <input
+  //         type="password"
+  //         name="password"
+  //         id="loginPassword"
+  //       /> <br />
+  //       <div id="error"></div>
 
-        <button onClick={loginHandler}
-          type="submit" 
-          id="loginbutton">
-          Login
+  //       <button onClick={loginHandler}
+  //         type="submit" 
+  //         id="loginbutton">
+  //         Login
+  //         </button>
+  //     </form>
+  //   </Container>
+  // )
+  return(
+    <div className="d-flex justify-content-center form_container">
+      <form>
+        <div className="mb-3">
+          <input type="text" placeholder="username" id="loginUsername"/>
+        </div>
+        <div className="mb-2">
+          <input type="password" placeholder="password" id="loginPassword"/>
+        </div>
+        <div id="error">Wrong username or password!</div>
+
+        <div className="d-flex justify-content-center mt-3">
+          <button onClick={loginHandler} type="submit" id="loginbutton">
+            Login
           </button>
+        </div>
       </form>
-    </div>
+		</div>
   )
 }
