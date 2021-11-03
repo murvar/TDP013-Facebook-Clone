@@ -64,24 +64,7 @@ export default function Searchresults() {
         
     
     }, [])
-
-    /*function render(){
-
-        return (
-            <div>
-                <h2>Search Results:</h2>
-                {searchArray && friendsArray && sentRequestsArray && searchArray.map((elem) => {
-    
-                    return ( <ResultComponent key={"resultComp"+ elem.userID} friendsArray={friendsArray} sentRequestsArray={sentRequestsArray} element={elem} sessionID={sessionID} />   
-                    )                                       
-                })
-                }
-            </div>
-        )
-    
-    }*/
-
-    
+   
    return (
         <div>
             <h2>Search Results:</h2>

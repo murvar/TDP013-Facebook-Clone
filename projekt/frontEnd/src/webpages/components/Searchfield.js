@@ -9,24 +9,24 @@ export default function Searchfield() {
 
     const searchHandler = async (e) => {
         e.preventDefault()
-        let searchValue = document.getElementById("searchValue").value
+        let searchValue = document.getElementById("searchValueTop").value
         history.push('/search/' + searchValue)  
       }
 
     return (
-        <div>
+        <div id="searchTop">
             <form>
                 <input
                 type="text"
                 name="Message"
-                id="searchValue"
+                id="searchValueTop"
                 placeholder="Search on Tvittter"
                 defaultValue={searchValue}
                 required/>
 
                 <button onClick={searchHandler}
                 type="submit" 
-                id="postbutton">
+                id="searchbuttonTop">
                 <i className="fas fa-search"></i>
                 Search
                 </button>

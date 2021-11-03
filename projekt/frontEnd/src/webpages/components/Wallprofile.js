@@ -17,10 +17,10 @@ export default function Wallprofile() {
     console.log(userID)
 
     return (
-        <div>
-            <h1> {userID}'s wall </h1>
-            <Postonwall />
-            <Messages />
+        <div className='wall-profile'>
+            <h1 id='wallprofile'> {userID}'s wall </h1>
+            <Postonwall/>
+            <Messages id='messages'/>
         </div>
     )
 }

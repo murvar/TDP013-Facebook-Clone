@@ -23,7 +23,7 @@ export default function postOnWall() {
 
 
   return (
-    <div>
+    <div id='postonwall'>
       <form>
         <input
           type="text"
@@ -35,6 +35,7 @@ export default function postOnWall() {
         <button onClick={postHandler}
           type="submit" 
           id="postbutton">
+          <i className="far fa-paper-plane"></i>
           Post
         </button>
       </form>

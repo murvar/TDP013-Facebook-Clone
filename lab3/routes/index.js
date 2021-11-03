@@ -10,23 +10,18 @@ app.use(express.urlencoded({ extended: false }));
 
 
 router.all('/messages', function(req, res, next) {
-  console.log(req.body)
   if(req.method == "POST" || req.method == "GET") {
     //Kolla om get har en body?
     if (req.method == "GET" && req.body == {}) { //Hur funkar det här???
-      console.log("failed get all")
       res.sendStatus(405)
     }
     next();
   } else {
-    //console.log(req.method)
-    console.log("another failed get all")
     res.sendStatus(405)
   }
 })
 
 router.all('/messages/:id', function(req, res, next) {
-  //console.log("1")
   if(req.method == "PATCH" || req.method == "GET") {
     next();
   } else {
@@ -39,7 +34,6 @@ router.all('/messages/:id', function(req, res, next) {
 //Save one
 
 router.post('/messages', (req, res) => {
-  console.log(req.body)
   if (validateMsg(req.body)) {
     msg = sanitize(req.body)
     const regex = new RegExp(/<script>/)  //injection?
@@ -74,9 +68,7 @@ function validateMsg(body) {
 //------------------------------------------------------------------
 //Mark read
 router.patch(('/messages/:id'), (req, res) => {
-  console.log("HERE")
   let msgId = sanitize(req.params.id)
-  //console.log("in patch function with value " + msgId)
 
   MongoClient.connect(url, (err, db) => {
     let dbo = db.db("tdp013");
@@ -121,10 +113,8 @@ router.get(('/messages'), (req, res) => {
     dbo.collection('messages').find().toArray(function(err, result) {
       db.close();
       if (err) {
-        //console.log(err)
       }
       else if (result != null) {
-        console.log(result)
         res.send(result)
       }
       else {
@@ -139,7 +129,6 @@ router.get(('/messages'), (req, res) => {
 // Get one
 router.get(('/messages/:id'), (req, res) => {
   let msgId = sanitize(req.params.id)
-  console.log("ID: " + msgId)
 
   MongoClient.connect(url, (err, db) => {
     let dbo = db.db("tdp013");
@@ -148,7 +137,6 @@ router.get(('/messages/:id'), (req, res) => {
     dbo.collection("messages").findOne(myquery, function(err, result) {
       db.close();
       if (err) {
-        //console.log(err)
       }
       else if (result != null) {
         res.json(result)//.json(result)
@@ -162,7 +150,6 @@ router.get(('/messages/:id'), (req, res) => {
 })
 
 app.use(function (req, res) {
-  //console.log("found it")
   res.send("Sorry can't find that!", 404)
 })
 

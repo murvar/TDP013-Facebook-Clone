@@ -22,7 +22,7 @@ export default function Friends() {
     
     return (
         <div id="friends">
-            <h3>Friends: </h3>
+            <h3 id="friendTitle">Friends:</h3>
             {friendArray && friendArray.map((elem) => {
                 // return (
                 //     <div className="friend" key={elem}>

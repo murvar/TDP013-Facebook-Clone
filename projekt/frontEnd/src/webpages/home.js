@@ -9,28 +9,28 @@ import { Row, Col, Container } from 'react-bootstrap';
 
 export default function home() {
     return (
-        <Container id="home">
-            <Row className="mt-1">
-            </Row>
-            <Row>
-                <Col>
+        <Container className="profile">
+            <Row id='top'>
+                <Col xs={12} md={2} sm={0}>
                     <Home />
                 </Col>
-                <Col>
+                <Col xs={12} md={6} sm={0}>
                     <Searchfield />
                 </Col>
-                <Col>
+                <Col xs={12} md={2} sm={0}>
                     <InviteDropDown />
                 </Col>
-                <Col>
+                <Col xs={12} md={2} sm={0}>
                     <Logout />
                 </Col>
             </Row>
             <Row>
-                <Col>
+                <Col xs={12} md={2} sm={0}>
+                </Col>
+                <Col xs={12} md={8} sm={12} id='wall'>
                     <Wallprofile />
                 </Col>
-                <Col>
+                <Col xs={6} md={2} sm={0} id='test'>
                     <Friends />
                 </Col>
 

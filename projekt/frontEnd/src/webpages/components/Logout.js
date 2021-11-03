@@ -24,8 +24,8 @@ export default function Logout() {
     }
 
     return (
-        <div>
-            <button onClick={logoutHandler} type="submit">Logout</button>
+        <div id='logout'>
+            <button id="logoutButton" onClick={logoutHandler} type="submit"><i id="logoutIcon" className="fas fa-sign-out-alt"></i>Logout</button>
         </div>
     )
 }

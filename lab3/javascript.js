@@ -6,6 +6,7 @@
 function newinit(){ //Hämta alla meddelanden
 
     getMessages()
+    newremoveErrorMsg();
     document.getElementById("submit_btn").addEventListener("click", postMessage)
 }
 
@@ -33,13 +34,15 @@ async function postMessage() { //Lägg till meddelande i databas
         .then((response) => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
+                newdisplayErrorMsg();
             }
             else {
-                console.log("getting message")
+                newremoveErrorMsg();
                 getMessage(JSON.parse(msgbody).id);
             }
         })
         .catch(err => {
+            newdisplayErrorMsg();
             console.error('There has been a problem with your fetch operation:', err);
         });
     
@@ -66,7 +69,6 @@ function getMessage(id) { //hämta ett meddelande
             }
             else {
                 response.text().then(function(result) {
-                    //console.log(result)
                     newcreateMsgTag(result)
                 })
             }
@@ -110,14 +112,8 @@ async function getMessages() {
             else {
                 response.text().then(function(result) {
                     data = JSON.parse(result)
-                    console.log(data)
                     data.sort(function newcompareFN(a, b){
-                        if (new Date(a.id).getTime() < new Date(b.id).getTime()) {
-                            console.log("a.id is " + a.id);
-                            console.log("b.id is " + b.id);
-                            console.log("---------");
-
-                            
+                        if (new Date(a.id).getTime() < new Date(b.id).getTime()) {            
                             return -1
                         }
                         else {return 1}
@@ -149,7 +145,6 @@ function newcreateMsgTag(msg) {
 
     checkbox.name = msg.id  //checkbox tar meddelandets namn
     checkbox.addEventListener("change", function() {
-        console.log("changed checkbox state = " + checkbox.checked)
         patchMessage(msg)
     })
 
@@ -190,7 +185,6 @@ function newgetAllMessages() {
             }
             else {
                 response.text().then(function(result) {
-                    console.log(JSON.parse(result))
                     return(JSON.parse(result))
                 })
             }
@@ -203,12 +197,9 @@ function newgetAllMessages() {
 
 function patchMessage(msg) {
     // KÖR PATCH FÖR ATT ÄNDRA STATE PÅ MEDDELANDE MED ID
-    //console.log("Added cookie with message: " + customObject.message + ", index: " + customObject.index + " and state: " + customObject.state)
     if (typeof msg == "string") {
         msg = JSON.parse(msg)
     }
-    console.log(msg)
-    console.log("msg id = " + msg.id)
     fetch('http://localhost:8888/messages/' + msg.id, {
         method: 'PATCH'
     })
@@ -229,8 +220,6 @@ function newcreateCustomObject(msg, id, state) {
     customObject.msg = msg;
     customObject.id = id
     customObject.state = state
-    console.log("CUSTOM OBJEcT IS AS FOLLOWS:")
-    console.log(ourJSON)
     return JSON.stringify(customObject)
 }
 

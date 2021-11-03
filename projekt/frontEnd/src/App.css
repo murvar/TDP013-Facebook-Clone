@@ -1,40 +1,6 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+html, body {
+  height: 100%;
+  
 }
 
 body {
@@ -42,6 +8,10 @@ body {
   background-image: url("https://freepngimg.com/thumb/artwork/59446-and-twitter-cartoon-black-white-drawing-bird.png");
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+a {
+  display: inline-block;
 }
 
 .btn {
@@ -55,7 +25,7 @@ body {
 
 .containerr {
   border: 2px solid #dedede;
-  background-color: #f1f1f1;
+  background-color: white;
   border-radius: 5px;
   padding: 10px;
   margin: 10px 0;
@@ -70,8 +40,12 @@ body {
 .containerr img {
   float: left;
   max-width: 60px;
-  width: 100%;
   margin-right: 20px;
+  border-radius: 50%;
+}
+
+.result-img {
+  max-width: 40px;
   border-radius: 50%;
 }
 
@@ -101,16 +75,121 @@ body {
   border: 1px solid;
 }
 
-#home {
+.profile {
   background-color: white;
+  height: auto;
+  min-height: 100vh;
 }
 
 #friends {
-  background-color: tomato;
+  /* display: flex; */
+  background-color: lightblue ;
+  border: 2px solid black;
+  width: 125px;
+  height: auto;
+  padding-bottom: 1px;
+  padding-top: 7px;
+  direction: column;
 }
 
-#friend-name {
-  background-color: white;
-  padding: 5px;
-  margin: 5px;
+#test {
+  display: flex;
+  justify-content: center;
 }
+
+#friendTitle {
+  text-align: center;
+}
+
+#wallprofile {
+  text-align: center;
+}
+
+#messages {
+  justify-content: center;
+  align-items: center;
+}
+
+#postonwall {
+  text-align: center;
+}
+
+#wall {
+  border: 2px solid black;
+  background-color: whitesmoke;
+}
+
+.wall-profile {
+  float: center;
+  justify-content: center;
+  align-items: center;
+  margin: 25px;
+}
+
+.friend-name {
+  display: flex;
+  background-color: white;
+  font-size: x-large;
+  border: 2px solid black;
+  border-radius: 50%;
+  padding: 20px;
+  width: 70px;
+  height: 70px;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.friend-div {
+  justify-content: center;
+  align-items: center;
+  margin: 25px;
+
+}
+
+#logoutButton {
+  display: flex;
+  border-radius: 5px;
+  border: 2px solid black;
+  padding: 10px;
+  float: right;
+
+
+}
+
+#logoutButton:hover {
+  background-color: lightgray;
+}
+
+#logoutIcon {
+  justify-content: center;
+  align-items: center;
+}
+
+#dropdown-button {
+  float: right;
+}
+
+#top {
+padding: 10px;
+}
+
+#searchTop {
+  /* display: flex;
+  align-items: center; */
+  text-align: center;
+
+}
+
+.result {
+  border: 2px solid black;
+  margin: 10px;
+  text-align: center;
+  background-color: white;
+}
+
+#results {
+  background-color: whitesmoke;
+  border: 2px solid black;
+}
+ 

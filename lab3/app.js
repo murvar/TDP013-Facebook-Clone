@@ -59,12 +59,12 @@ function startServer(port) {
 function clearDatabase() {
   MongoClient.dropDatabase();
 }
-/*
-let server = app.listen(8888, () => {
-  let host = server.address().address
-  let port = server.address().port
-  console.log(`Lyssnar på http://${host}:${port}`)
- })*/
+
+// let server = app.listen(8888, () => {
+//   let host = server.address().address
+//   let port = server.address().port
+//   console.log(`Lyssnar på http://${host}:${port}`)
+//  })
 
  startServer()
 

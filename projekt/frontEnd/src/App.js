@@ -10,7 +10,7 @@ function App() {
   console.log("Running log from app.js with cookie = " + document.cookie)
 
   return (
-    <div>
+    <div id="root">
         <Webpages />
     </div>
   )

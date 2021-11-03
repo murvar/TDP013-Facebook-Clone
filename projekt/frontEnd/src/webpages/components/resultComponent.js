@@ -1,5 +1,6 @@
 import React from 'react'
 import {search, toggleFriendRequest, getCookie, friends, getMySentRequests} from './../../serverFetch'
+import { Row, Col, Container } from 'react-bootstrap';
 
 export default function ResultComponent(props) {
 
@@ -32,28 +33,45 @@ export default function ResultComponent(props) {
             {(() => {
                 if (props.friendsArray.includes(props.element.userID)) {
                     return (
-                        <div>
-                            <a href={"/profile/" + props.element.userID}>{props.element.userID}</a>
-                            <p>already friends</p>
+                        <div className='result'>
+                            <Row>
+                            <Col>
+                            <img src="https://www.w3schools.com/howto/img_avatar.png" alt="avatar" className="result-img"/>
+                            </Col>
+                            <Col>
+                            <a href={"/profile/" + props.element.userID}><h3>{props.element.userID}</h3></a>
+                            </Col>
+                            <Col>
+                            <p>Already friends</p>
+                            </Col>
+                            </Row>
                         </div>
                     )
                 } else {
                     return (
-                        <div>
-                            <p>{props.element.userID}</p>
+                        <div  className='result'>
+                            <Row>
+                            <Col>
+                            <img src="https://www.w3schools.com/howto/img_avatar.png" alt="avatar" className="result-img"/>
+                            </Col>
+                            <Col>
+                            <h3>{props.element.userID}</h3>
+                            </Col>
+                            <Col>
                             <form>
                                 <label>
-                                    Add friend:
-                                    {/* IMPORTANT PART OF HTML HERE*/}
-                                    <input
-                                        name="Add friend"
-                                        type="checkbox"
-                                        id={"checkbox" + props.element.userID}
-                                        checked={checkboxToggle}
-                                        onChange={(e) => toggleFriendRequestHandler(e, props.element.userID)}
-                                        />
+                                    Add friend
                                 </label>
+                                <input
+                                    name="Add friend"
+                                    type="checkbox"
+                                    id={"checkbox" + props.element.userID}
+                                    checked={checkboxToggle}
+                                    onChange={(e) => toggleFriendRequestHandler(e, props.element.userID)}
+                                    />
                             </form>
+                            </Col>
+                            </Row>
                         </div>
                     )
                 }
