@@ -66,6 +66,6 @@ function clearDatabase() {
 //   console.log(`Lyssnar på http://${host}:${port}`)
 //  })
 
- startServer()
+ //startServer()
 
  module.exports = startServer;
