@@ -31,10 +31,6 @@ export default function Login(){
           else {
             let err = document.getElementById('error')
             err.style.visibility = "visible";
-            // if (!err.hasChildNodes) {
-            //   let errmsg = document.createTextNode("Wrong username or password!")
-            //   err.appendChild(errmsg)
-            // }
             
           }
       },
@@ -43,33 +39,7 @@ export default function Login(){
       }
     )
   }
-  // return (
-  //   <Container>
-  //     <form method="post">
-  //       <label htmlFor="username">Username:</label><br />
-  //       <input
-  //         type="text"
-  //         name="username"
-  //         defaultValue={getCookie("userID")}
-  //         id="loginUsername"
-  //       />
-  //       <br />
-  //       <label htmlFor="password">Password:</label><br />
-  //       <input
-  //         type="password"
-  //         name="password"
-  //         id="loginPassword"
-  //       /> <br />
-  //       <div id="error"></div>
 
-  //       <button onClick={loginHandler}
-  //         type="submit" 
-  //         id="loginbutton">
-  //         Login
-  //         </button>
-  //     </form>
-  //   </Container>
-  // )
   return(
     <div className="d-flex justify-content-center form_container">
       <form>

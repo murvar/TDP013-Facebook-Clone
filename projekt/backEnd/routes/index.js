@@ -21,7 +21,6 @@ app.use(express.urlencoded({ extended: false }));
 // returnerna en session ID/Token
 
 router.post("/login", (req, res) => {
-  console.log("entering login")
   let username = req.body.username;
   let pw = req.body.password;
   let myquery = { userID: username, password: pw}
@@ -47,7 +46,7 @@ router.post("/login", (req, res) => {
           }
           else {
             db.close()
-            res.send({sessionID: sessionIDvalue})
+            res.status(200).send({sessionID: sessionIDvalue})
   
           }
         });
@@ -132,7 +131,6 @@ router.patch("/logout", (req, res) => {
       } 
       else {
         //If we dont find a result
-        console.log(result)
         res.status(500).send("nothing found!")
         db.close();
       }
@@ -156,13 +154,11 @@ router.post(('/friends'), (req, res) => {
         res.sendStatus(500)
       } 
       else if (result != null) {
-        console.log("loading friend list")
         res.send({friends: result.friends})
         db.close();
 
       } 
       else {
-        console.log("no result found!")
         res.sendStatus(500)
         db.close();
       }
@@ -180,7 +176,6 @@ router.post(('/friends'), (req, res) => {
 // returnerar namn OCH alla meddelanden som skall vara på väggen för vän
 
 router.post(('/friends/:userID'), (req, res) => {
-  console.log("loading messages")
 
   let user = req.params.userID;
   let id = req.body.sessionID;
@@ -196,10 +191,9 @@ router.post(('/friends/:userID'), (req, res) => {
       else if (result != null) {
         //kolla om användarIDet finns i results.friends array
         //om det finns hämta väggen för användarIDet
-        console.log(result.userID + " & " + user)
 
         if(result.userID === user) {
-            res.send({wall: result.wall})
+            res.send({wall: result.wall}).status(200)
             db.close();
           } 
 
@@ -212,24 +206,21 @@ router.post(('/friends/:userID'), (req, res) => {
               db.close();
             } 
             else if (result != null) {
-              res.send({wall: result.wall})
+              res.send({wall: result.wall}).status(200)
               db.close();
             } 
             else {
-              console.log("no result found!")
               res.sendStatus(500)
               db.close();
             }
           })
         }
         else {
-          console.log("Weird ass problem!")
           res.sendStatus(500)
           db.close();
         }
       } 
       else {
-        console.log("no result found!")
         res.sendStatus(500)
         db.close();
       }
@@ -259,7 +250,6 @@ router.post(('/'), (req, res) => {
         res.send({ "wall" : result.wall, "userID" : result.userID}).status(200)
       } 
       else {
-        console.log("no result found!")
         res.sendStatus(500)
         db.close();
       }
@@ -280,8 +270,6 @@ router.get(('/search/:id'), (req, res) => {
   MongoClient.connect(url, (err, db) => {
     let dbo = db.db("tvitter");
     dbo.collection("users").find(myquery).toArray(function (err, result) {
-      // console.log("Results:")
-      // console.log(result)
       if (err) {
         res.sendStatus(500)
       } 
@@ -293,7 +281,6 @@ router.get(('/search/:id'), (req, res) => {
         res.send(userList);
       } 
       else {
-        console.log("no result found!")
         res.sendStatus(500)
         db.close();
       }
@@ -314,10 +301,11 @@ router.get(('/search/:id'), (req, res) => {
 //Kolla om 
 //Toggle friend request
 router.patch(('/request/:userID'), (req, res) => {
-
   let user = req.params.userID;
   let requester = req.body.sessionID;
   let myquery = { sessionID: requester };
+
+  
 
   MongoClient.connect(url, (err, db) => {
     let dbo = db.db("tvitter");
@@ -408,7 +396,6 @@ router.patch(('/request/:userID'), (req, res) => {
               }
             }
             else {
-              console.log("no result found!")
               res.sendStatus(500)
               db.close();
             }
@@ -416,7 +403,6 @@ router.patch(('/request/:userID'), (req, res) => {
         }
       }
       else {
-        console.log("no result found 2!")
         res.sendStatus(500)
         db.close();
       }
@@ -448,7 +434,6 @@ router.patch("/requests", (req, res) => {
     let dbo = db.db("tvitter");
     dbo.collection("users").findOne(myquery, function(err, result) {
       if (err) {
-        console.log("1")
         res.sendStatus(500)
       } 
       else if (result != null) {
@@ -523,7 +508,6 @@ router.post('/getMyRequests', (req, res) => {
   let id = req.body.sessionID;
   let myquery = {sessionID: id}
 
-  console.log(id)
 
 
   MongoClient.connect(url, (err, db) => {
@@ -555,19 +539,14 @@ router.post('/getMySentRequests', (req, res) => {
     let dbo = db.db("tvitter");
     dbo.collection("users").findOne(myquery, function(err, result) {
       if (err) {
-        console.log("Err in getMySentRequests")
         res.sendStatus(500)
         db.close();
       } 
       else if (result != null) {
-        // console.log(result.invites)
-        console.log("HERE")
-        console.log(result.invites)
         res.send({invites: result.invites})
         db.close();
       }
       else {
-        console.log("Nothing found")
         res.status(500).send("nothing found!")
         db.close();
       }
@@ -591,15 +570,16 @@ router.post('/addMsg/:userID', (req, res) => {
     dbo.collection("users").findOne(myquery, function(err, result) {
       if (err) {
         res.sendStatus(500)
+        db.close();
       } 
       else if (result != null) { 
         let sender = result.userID;
         if(result.friends.find(element => element == user) || result.userID == user) {
-          console.log("HERE")
           let userquery = { userID: user}
           dbo.collection("users").findOne(userquery, function(err, result) {
             if (err) {
               res.sendStatus(500)
+              db.close();
             } 
             else if (result != null) {
               //add msg to friends wall 
@@ -609,19 +589,22 @@ router.post('/addMsg/:userID', (req, res) => {
               let newValues = { $set: {wall: result.wall} };
               dbo.collection("users").updateOne(userquery, newValues, function(err, result2) {
                 if (err) {
-                  db.close();
                   res.sendStatus(500)
+                  db.close();
                 } else {
                   res.send({"msg" : msgObject}).status(200)
+                  db.close();
                 }
               })
             } 
             else {
-              console.log("no result found!")
               res.sendStatus(500)
               db.close();
             }
           })
+        } else {
+          res.sendStatus(500);
+          db.close();
         }
       }
     })
@@ -636,7 +619,6 @@ function validateMsg(msg) {
 }
 
 app.use(function (req, res) {
-  //console.log("found it")
   res.send("Sorry can't find that!", 404)
 })
 

@@ -1,9 +1,13 @@
 import React from 'react'
 import {useHistory} from 'react-router-dom';
+import {getCookie} from './../../serverFetch'
 
 export default function Home() {
 
     let history = useHistory()
+    if (getCookie("sessionID") == "") {
+      history.push('/login') 
+    }
 
     const sendHome = async (e) => {
         e.preventDefault()

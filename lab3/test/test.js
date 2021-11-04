@@ -9,10 +9,7 @@ const { option } = require('commander');
 let server
 apiURL = "http://localhost:8888"
 
-// Frågor imorgon!!!
-//Tanke: verifiera att serveranslutning faktiskt finns inför testerna. 
-// Dubbelkolla också injections. 
-const long = "Loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"
+ong = "Loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"
 
 
 describe('Adding message', () => {
@@ -42,97 +39,6 @@ describe('Adding message', () => {
             })       
     })
  
-    it('Add message with too many chars, return 500', (done) =>{
-        post(apiURL + "/messages")
-            .type("application/json")
-            .send({ msg: long, state: false, id: 0 })
-            .then(res => {
-                done();
-            })
-            .catch(err => {
-                should(err).have.property("status", 500)
-                done();
-            })  
-    })
-
-    it('Add message with too few chars, return 500', (done) =>{
-        post(apiURL + "/messages")
-            .type("application/json")
-            .send({ msg: "", state: false, id: 0 })
-            .then(res => {
-                should(res).have.property("status", 500)
-                done();
-            })
-            .catch(err => {
-                done();
-            }) 
-    })
-
-    it('Add message with injection, return 500', (done) =>{
-        post(apiURL + "/messages")
-            .type("application/json")
-            .send({ msg: '<script src="1b-script.js"></script>', state: false, id: 0 })
-            .then(res => {
-                done();
-            })
-            .catch(err => {
-                should(err).have.property("status", 500)
-                done();
-            })  
-    })
-
-    it('Add message with not string, return 500', (done) =>{
-        post(apiURL + "/messages")
-            .type("application/json")
-            .send({ msg: 1, state: false, id: 0 })
-            .then(res => {
-                done();
-            })
-            .catch(err => {
-                should(err).have.property("status", 500)
-                done();
-            })  
-    })
-
-    it('Add message with PUT, return 405', (done) =>{
-        put(apiURL + "/messages")
-            .type("application/json")
-            .send({ msg: "long", state: false, id: 0 })
-            .then(res => {
-                done();
-            })
-            .catch(err => {
-                should(err).have.property("status", 405)
-                done();
-            })
-    })
-
-    it('Add message with PATCH, return 405', (done) =>{
-        patch(apiURL + "/messages")
-            .type("application/json")
-            .send({ msg: "long", state: false, id: 0 })
-            .then(res => {
-                done();
-            })
-            .catch(err => {
-                should(err).have.property("status", 405)
-                done();
-            })
-    })
-
-    it('Add message with faulty state, return 500', (done) =>{
-        post(apiURL + "/messages")
-            .type("application/json")
-            .send({ msg: "hej", state: "fel", id: "date" })
-            .then(res => {
-                should(res).have.property("status", 500)
-                done();
-            })
-            .catch(err => {
-                should(err).have.property("status", 500)
-                done();
-            })
-    })
     
 })
 

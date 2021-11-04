@@ -129,31 +129,7 @@ export async function wall(userID, sessionID) {
         });
     return wallPromise
 }
-/*
-export async function homeWall(sessionID) { 
 
-    const homeWallPromise = fetch('http://localhost:3000/', {
-        method: 'POST', 
-        headers : {
-            'Content-Type': 'application/json'
-        },
-        body : JSON.stringify({"sessionID" : sessionID})
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            else {
-                console.log("Fetching " + response.userID + "´s wall")
-                return(response.wall, response.userID)
-            }
-        })
-        .catch(err => {
-            console.error('There has been a problem with your fetch operation:', err);
-        });
-    return homeWallPromise
-}
-*/
 export async function search(searchValue) { 
 
     const searchPromise = fetch('http://localhost:3000/search/' + searchValue, {
