@@ -5,7 +5,7 @@ import {getCookie} from './../../serverFetch'
 export default function Home() {
 
     let history = useHistory()
-    if (getCookie("sessionID") == "") {
+    if (getCookie("sessionID") === "") {
       history.push('/login') 
     }
 

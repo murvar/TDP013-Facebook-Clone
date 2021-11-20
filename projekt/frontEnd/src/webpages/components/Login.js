@@ -1,7 +1,6 @@
 import React from "react";
 import {useHistory} from 'react-router-dom';
 import {getCookie, login} from './../../serverFetch'
-import { Container, Row, Col} from 'react-bootstrap';
 
 export default function Login(){
     let history = useHistory();

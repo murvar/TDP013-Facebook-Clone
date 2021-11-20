@@ -1,6 +1,6 @@
 import React from 'react'
-import {search, toggleFriendRequest, getCookie, friends, getMySentRequests} from './../../serverFetch'
-import { Row, Col, Container } from 'react-bootstrap';
+import {toggleFriendRequest} from './../../serverFetch'
+import { Row, Col } from 'react-bootstrap';
 
 export default function ResultComponent(props) {
 

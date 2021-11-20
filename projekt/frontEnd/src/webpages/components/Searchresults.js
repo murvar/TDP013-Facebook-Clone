@@ -1,6 +1,6 @@
 import React from 'react'
 import {useParams} from 'react-router-dom'
-import {search, toggleFriendRequest, getCookie, friends, getMySentRequests} from './../../serverFetch'
+import {search, getCookie, friends, getMySentRequests} from './../../serverFetch'
 import ResultComponent from './resultComponent';
 
 export default function Searchresults() {

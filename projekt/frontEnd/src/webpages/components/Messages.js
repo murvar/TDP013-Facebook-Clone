@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom'
-import {wall, homeWall, getCookie} from './../../serverFetch'
+import {wall, getCookie} from './../../serverFetch'
 import Messagecomp from './Messagecomponent'
 
 export default function Messages() {

@@ -1,7 +1,7 @@
 import React from 'react'
 import Login from './components/Login';
 import Register from './components/Register';
-import { Container, Row, Col} from 'react-bootstrap';
+import { Container, Row} from 'react-bootstrap';
 
 export default function login() {
   return (

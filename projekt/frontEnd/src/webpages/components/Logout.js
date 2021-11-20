@@ -14,7 +14,7 @@ export default function Logout() {
 
         logoutPromise.then(
         function(res) {
-            document.cookie = "sessionID =" + "";
+            document.cookie = "sessionID =";
             // document.cookie = "userID =" + username;
             history.push('/login')
         },

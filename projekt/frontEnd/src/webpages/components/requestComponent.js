@@ -1,5 +1,5 @@
 import React from 'react'
-import {search, toggleFriendRequest, getCookie, friends, getMySentRequests, answerFriendRequest} from './../../serverFetch'
+import {getCookie, answerFriendRequest} from './../../serverFetch'
 
 export default function RequestComponent(props) {
 
