@@ -24,13 +24,7 @@ export default function Friends() {
         <div id="friends">
             <h3 id="friendTitle">Friends:</h3>
             {friendArray && friendArray.map((elem) => {
-                // return (
-                //     <div className="friend" key={elem}>
-                //     <a href={"/profile/" + elem}>{elem}</a>
-                //     </div>
-                //     )
                 return(<Friendcomponent key={elem} name={elem}/>)
-                
                 })}
         </div>
     )

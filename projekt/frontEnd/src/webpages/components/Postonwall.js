@@ -14,11 +14,16 @@ export default function postOnWall() {
     e.preventDefault()
     let msg = document.getElementById("postMSG").value
     postMsg(userID, sessionID, msg)
-    if (userID === getCookie("userID")) {
-      history.push('/')
-    } else {
-      history.push('/profile/' + userID)  
-    }
+    .then(() => {
+      if (userID === getCookie("userID")) {
+        history.push('/')
+        window.location.reload(false);
+      } else {
+        history.push('/profile/' + userID)
+        window.location.reload(false);
+      }
+    })
+    
   }
 
 

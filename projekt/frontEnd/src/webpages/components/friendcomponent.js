@@ -6,6 +6,5 @@ export default function Friendcomponent(props) {
             <a className="friend-name" href={"/profile/" + props.name}>{props.name.substring(0, 2)}</a>
         </div>
         
-        
     )
 }

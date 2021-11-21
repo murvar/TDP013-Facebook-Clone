@@ -32,7 +32,7 @@ export default function Messages() {
     return (
         <div>
             <h2>MESSAGES:</h2>
-            {flag1 && msgArray.map((elem) => {
+            {flag1 && msgArray.slice(0).reverse().map((elem) => {
                 return(<Messagecomp key={'mc' + elem.time} time={elem.time} msg={elem.msg} sender={elem.sender} />)
                 //return(<li key={elem.time}>{elem.msg}</li>)
             })}

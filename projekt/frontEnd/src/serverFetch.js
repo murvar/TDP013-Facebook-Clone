@@ -8,7 +8,6 @@ function hashMyPassword(password) {
   }
 
   
-
   export async function login(username, password) { 
     let hashedPassword = hashMyPassword(password)
 
@@ -246,7 +245,7 @@ export async function getMySentRequests(sessionID) {
 
 export async function postMsg(userID, sessionID, msg) { 
 
-    fetch('http://localhost:3000/addMsg/' + userID, {
+    const AFRPromise = fetch('http://localhost:3000/addMsg/' + userID, {
         method: 'POST',
         headers : {
             'Content-Type': 'application/json'
@@ -265,6 +264,7 @@ export async function postMsg(userID, sessionID, msg) {
         .catch(err => {
             console.error('There has been a problem with your fetch operation:', err);
         });
+    return AFRPromise
 }
 
 export function getCookie(cname) {

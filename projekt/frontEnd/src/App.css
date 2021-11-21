@@ -73,6 +73,8 @@ a {
   background-color: white;
   visibility: hidden;
   border: 1px solid;
+  width: auto;
+  margin-top: 15px;
 }
 
 .profile {

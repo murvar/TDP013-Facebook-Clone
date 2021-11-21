@@ -572,6 +572,11 @@ router.post('/addMsg/:userID', (req, res) => {
         res.sendStatus(500)
         db.close();
       } 
+      else if (!validateMsg(msg)) 
+      {
+        res.sendStatus(500);
+        db.close();
+      }
       else if (result != null) { 
         let sender = result.userID;
         if(result.friends.find(element => element == user) || result.userID == user) {

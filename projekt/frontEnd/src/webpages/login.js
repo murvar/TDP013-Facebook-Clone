@@ -18,6 +18,9 @@ export default function login() {
 						<Register/>
 					</div>
         </Row>
+        <Row>
+          <div className="mx-auto" id="error">Wrong username or password!</div>
+        </Row>
       </Container>
   )
 }

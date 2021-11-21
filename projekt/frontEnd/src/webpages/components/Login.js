@@ -43,13 +43,11 @@ export default function Login(){
     <div className="d-flex justify-content-center form_container">
       <form>
         <div className="mb-3">
-          <input type="text" placeholder="username" id="loginUsername"/>
+          <input type="text" placeholder="Username" id="loginUsername"/>
         </div>
         <div className="mb-2">
-          <input type="password" placeholder="password" id="loginPassword"/>
+          <input type="password" placeholder="Password" id="loginPassword"/>
         </div>
-        <div id="error">Wrong username or password!</div>
-
         <div className="d-flex justify-content-center mt-3">
           <button onClick={loginHandler} type="submit" id="loginbutton">
             Login
