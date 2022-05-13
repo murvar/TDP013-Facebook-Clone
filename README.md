@@ -1,9 +1,13 @@
 # TDP013
 
 En webbplats som är navigerbar och använder Bootstrap, jQuery UI eller liknande
+
 Data ska sparas i en databas (MongoDB)
+
 Webbplatsen ska använda sig av god interaktionsdesign och vara användarvänlig
+
 Alla beslut kring interaktion, layout och design ska vara tydligt genomtänkta
+
 Testning av backend ska ske med Mocha och Istanbul
 
 Webbplatsen ska använda sig utav de tekniker som använts i laborationerna. Alla huvudsakliga funktioner ska testas grundligt och det är vikitigt att kunna motivera både funktionalitet och visuell layout. Utöver detta kommer ny kunskap att behöva förvärvas om andra tekniker som specifieras i nedan.
